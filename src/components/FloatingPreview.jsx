@@ -3,7 +3,10 @@ import React, { useEffect, useRef, useState } from 'react';
 export default function FloatingPreview({ target, position }) {
   const fpRef = useRef(null);
   const [cachedTarget, setCachedTarget] = useState(target);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeFailed, setIframeFailed] = useState(false);
   const isShowingRef = useRef(false);
+  const timeoutRef = useRef(null);
 
   const stateRef = useRef({
     fx: 0,
@@ -13,12 +16,37 @@ export default function FloatingPreview({ target, position }) {
     raf: 0
   });
 
+  // Track target updates and reset iframe state per window
   useEffect(() => {
     if (target) {
       setCachedTarget(target);
+      setIframeLoaded(false);
+      setIframeFailed(false);
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // If live mode, set a 4-second timeout fallback to screenshot
+      if (target.previewMode === 'live' || target.s === 'live') {
+        timeoutRef.current = setTimeout(() => {
+          setIframeFailed(true);
+        }, 4000);
+      }
+    } else {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [target]);
 
+  // Position and spring follow loop
   useEffect(() => {
     if (typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches) {
       return;
@@ -29,15 +57,16 @@ export default function FloatingPreview({ target, position }) {
       return;
     }
 
-    let x = position.x + 20;
+    let x = position.x + 22;
     let y = position.y - 40;
 
-    if (x + 350 > window.innerWidth - 12) {
+    // Flip side near screen right edge (card width is 340px)
+    if (x + 360 > window.innerWidth - 12) {
       x = position.x - 362;
     }
-    y = Math.max(16, Math.min(window.innerHeight - 262, y));
+    y = Math.max(16, Math.min(window.innerHeight - 240, y));
 
-    // Snap instantly to cursor on first hover - eliminates any swoop from top
+    // Instant snap on first entrance
     if (!isShowingRef.current) {
       stateRef.current.fx = x;
       stateRef.current.fy = y;
@@ -54,8 +83,8 @@ export default function FloatingPreview({ target, position }) {
 
     const loop = () => {
       const s = stateRef.current;
-      s.fx += (s.tx - s.fx) * 0.2;
-      s.fy += (s.ty - s.fy) * 0.2;
+      s.fx += (s.tx - s.fx) * 0.22;
+      s.fy += (s.ty - s.fy) * 0.22;
 
       if (fpRef.current) {
         fpRef.current.style.transform = `translate3d(${s.fx}px, ${s.fy}px, 0) scale(1)`;
@@ -68,8 +97,10 @@ export default function FloatingPreview({ target, position }) {
     }
 
     return () => {
-      cancelAnimationFrame(stateRef.current.raf);
-      stateRef.current.raf = 0;
+      if (stateRef.current.raf) {
+        cancelAnimationFrame(stateRef.current.raf);
+        stateRef.current.raf = 0;
+      }
     };
   }, [position, target]);
 
@@ -81,103 +112,221 @@ export default function FloatingPreview({ target, position }) {
   if (!active) return null;
 
   const isLive = active.previewMode === 'live' || active.s === 'live';
-  const rawUrl = active.url || active.u || 'private work';
-  const urlLabel = rawUrl.replace(/^https?:\/\//, '');
-  const tagLabel = isLive ? 'LIVE' : 'AUTO-SHOT';
+  const hasPublicUrl = active.url && active.url.startsWith('http');
+  const rawUrl = active.url || active.u || '';
+  const urlLabel = rawUrl
+    ? rawUrl.replace(/^https?:\/\//, '')
+    : active.id === 'vt' || active.id === 'net'
+    ? 'notes.kavy.dev'
+    : 'verified-record';
 
-  const renderVisual = () => {
-    switch (active?.id) {
-      case 'phish':
-        return (
-          <>
+  // Tag in browser top bar
+  const tagLabel = isLive
+    ? iframeFailed
+      ? 'AUTO-SHOT (FALLBACK)'
+      : 'LIVE'
+    : hasPublicUrl
+    ? 'AUTO-SHOT'
+    : 'FACT SHEET';
+
+  // Check if project has an automated screenshot available
+  const screenshotIds = ['phish', 'aegis', 'sent', 'safe', 'wr', 'ps', 'thm'];
+  const hasScreenshot = screenshotIds.includes(active.id);
+
+  const renderContent = () => {
+    // 1. Live iframe mode
+    if (isLive && !iframeFailed) {
+      return (
+        <>
+          {/* Skeleton shown while iframe loads */}
+          {!iframeLoaded && (
             <div className="sk">
               <u className="a" />
               <u className="b" />
               <u className="c" />
               <div />
               <u className="b" />
-              <p>PhishSim AI &middot; live cloud deployment</p>
+              <p>{active.title || 'Live Demo'} &middot; loading cloud deployment...</p>
             </div>
-            <iframe
-              loading="lazy"
-              src="https://phishsim-ai.onrender.com"
-              tabIndex={-1}
-              title="PhishSim AI preview"
-            />
-          </>
-        );
-      case 'aegis':
+          )}
+          <iframe
+            loading="lazy"
+            src={active.url}
+            tabIndex={-1}
+            title={`${active.title} preview`}
+            onLoad={() => {
+              if (timeoutRef.current) clearTimeout(timeoutRef.current);
+              setIframeLoaded(true);
+            }}
+            onError={() => {
+              if (timeoutRef.current) clearTimeout(timeoutRef.current);
+              setIframeFailed(true);
+            }}
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              width: '1280px',
+              height: '800px',
+              border: 0,
+              transform: 'scale(0.265625)',
+              transformOrigin: '0 0',
+              background: '#fff',
+              opacity: iframeLoaded ? 1 : 0,
+              transition: 'opacity 0.25s ease'
+            }}
+          />
+        </>
+      );
+    }
+
+    // 2. Screenshot mode (or live mode fallback)
+    if (hasScreenshot) {
+      return (
+        <div style={{ position: 'relative', width: '100%', height: '100%', background: 'var(--bg)' }}>
+          <img
+            src={`/previews/${active.id}.png`}
+            alt={`${active.title} screenshot`}
+            loading="lazy"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'top',
+              display: 'block'
+            }}
+            onError={(e) => {
+              // Graceful fallback to skeleton if image is missing
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        </div>
+      );
+    }
+
+    // 3. Clean designed text card for projects with no public page (DRDO, TechDefence, CTF, Contact, Notes)
+    switch (active.id) {
+      case 'td':
         return (
-          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <svg viewBox="0 0 200 90" style={{ width: '100%', height: 'auto' }}>
-              <rect x="10" y="25" width="45" height="40" rx="3" fill="var(--surf)" stroke="var(--ln)" />
-              <text x="32" y="48" textAnchor="middle" fill="var(--ink)" fontSize="8" fontFamily="var(--font-mono)">LLM</text>
-              <path d="M 55 45 L 85 45" stroke="var(--ac)" strokeWidth="1.5" strokeDasharray="2 2" />
-              <rect x="85" y="20" width="50" height="50" rx="3" fill="var(--surf)" stroke="var(--ac)" strokeWidth="1.5" />
-              <text x="110" y="44" textAnchor="middle" fill="var(--ac)" fontSize="8" fontWeight="700" fontFamily="var(--font-mono)">9 GATES</text>
-              <text x="110" y="56" textAnchor="middle" fill="#E5533F" fontSize="7" fontFamily="var(--font-mono)">BLOCKED</text>
-              <path d="M 135 45 L 160 45" stroke="var(--ln)" strokeWidth="1.5" />
-              <rect x="160" y="25" width="30" height="40" rx="3" fill="var(--surf)" stroke="var(--ln)" />
-              <circle cx="175" cy="40" r="4" fill="#E5533F" />
-              <text x="175" y="55" textAnchor="middle" fill="var(--mu)" fontSize="6" fontFamily="var(--font-mono)">LED</text>
-            </svg>
-            <span className="mono" style={{ fontSize: '10px', color: 'var(--mu)', textAlign: 'center', marginTop: '6px' }}>
-              AegisAgent &middot; Hardware tested gateway
-            </span>
+          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--surf)' }}>
+            <div>
+              <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                VAPT INTERNSHIP &middot; JUN&ndash;JUL 2026
+              </span>
+              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                TechDefence Labs
+              </h4>
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.4 }}>
+                Tested enterprise web applications for 20+ clients using Burp Suite, Nessus, Nmap, and Kali Linux.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Burp Suite</span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Nessus</span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>OWASP Top 10</span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>Internal client scope</span>
+            </div>
           </div>
         );
-      case 'sent':
+
+      case 'drdo':
         return (
-          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <svg viewBox="0 0 200 90" style={{ width: '100%', height: 'auto' }}>
-              <line x1="20" y1="30" x2="180" y2="30" stroke="var(--ln)" strokeWidth="1" />
-              <line x1="20" y1="50" x2="180" y2="50" stroke="var(--ln)" strokeWidth="1" />
-              <circle cx="45" cy="30" r="4" fill="#2fbf71" />
-              <circle cx="95" cy="30" r="4" fill="#2fbf71" />
-              <circle cx="145" cy="30" r="5" fill="#E5533F" />
-              <text x="100" y="72" textAnchor="middle" fill="#E5533F" fontSize="8" fontWeight="700" fontFamily="var(--font-mono)">
-                T1046 DETECTED &bull; ISOLATION FOREST
-              </text>
-            </svg>
-            <span className="mono" style={{ fontSize: '10px', color: 'var(--mu)', textAlign: 'center', marginTop: '6px' }}>
-              SentinelFlow &middot; In progress
-            </span>
+          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--surf)' }}>
+            <div>
+              <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                DEFENSE RESEARCH &middot; JUN&ndash;JUL 2025
+              </span>
+              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                Defence Research &amp; Dev Organisation
+              </h4>
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.4 }}>
+                Developed Unmanned Aerial Vehicle (UAV) trajectory flight simulation models and sensor telemetry in MATLAB.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>MATLAB</span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Telemetry</span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Flight Sim</span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>Classified Defense Data</span>
+            </div>
           </div>
         );
-      case 'safe':
+
+      case 'ctf':
         return (
-          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <svg viewBox="0 0 200 90" style={{ width: '100%', height: 'auto' }}>
-              <rect x="15" y="30" width="35" height="30" rx="3" fill="var(--surf)" stroke="var(--ln)" />
-              <text x="32" y="48" textAnchor="middle" fill="var(--ink)" fontSize="7" fontFamily="var(--font-mono)">Kali</text>
-              <path d="M 50 45 L 75 45" stroke="var(--ln)" strokeWidth="1" />
-              <rect x="75" y="25" width="50" height="40" rx="3" fill="var(--surf)" stroke="var(--ac)" strokeWidth="1.5" />
-              <text x="100" y="48" textAnchor="middle" fill="var(--ac)" fontSize="8" fontWeight="700" fontFamily="var(--font-mono)">SafeLine WAF</text>
-              <path d="M 125 45 L 150 45" stroke="var(--ln)" strokeWidth="1" />
-              <rect x="150" y="30" width="35" height="30" rx="3" fill="var(--surf)" stroke="var(--ln)" />
-              <text x="167" y="48" textAnchor="middle" fill="var(--ink)" fontSize="7" fontFamily="var(--font-mono)">DVWA</text>
-            </svg>
-            <span className="mono" style={{ fontSize: '10px', color: 'var(--mu)', textAlign: 'center', marginTop: '6px' }}>
-              SafeLine Lab &middot; In progress
-            </span>
+          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--surf)' }}>
+            <div>
+              <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                VERIFIED ACHIEVEMENTS &middot; 2024&ndash;2026
+              </span>
+              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                Sea of Secrets CTF &amp; AI Security Cert
+              </h4>
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.4 }}>
+                Solo rank under 150 worldwide in Sea of Secrets CTF. Certified in AI security fundamentals &amp; OWASP Top 10 for LLMs.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Top 150 Solo</span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>LLM Security</span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>Observable Proof</span>
+            </div>
           </div>
         );
+
+      case 'contact':
+        return (
+          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--surf)' }}>
+            <div>
+              <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                DIRECT CONTACT &middot; JODHPUR
+              </span>
+              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                Open to Internships &amp; Jobs
+              </h4>
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.4 }}>
+                Say hi, the door is open. Click the door below to copy email address.
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span className="mono" style={{ fontSize: '11px', color: 'var(--ac)', fontWeight: 600 }}>kavysharma196@gmail.com</span>
+              <span className="mono" style={{ fontSize: '9px', color: 'var(--mu)' }}>One-click copy</span>
+            </div>
+          </div>
+        );
+
       default:
+        // Vulnerability Table / Notes
         return (
-          <div className="sk">
-            <u className="a" />
-            <u className="b" />
-            <u className="c" />
-            <div />
-            <u className="b" />
-            <p>{active?.title || active?.t || 'Project'} &middot; snapshot refreshed daily</p>
+          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--surf)' }}>
+            <div>
+              <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                FIELD RESEARCH &middot; 2-MIN READS
+              </span>
+              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                {active.title}
+              </h4>
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.4 }}>
+                {active.desc || active['one-line'] || 'Short, plain-language field notes cut from real lab exercises.'}
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Web Security</span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Networks</span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>Interactive /notes</span>
+            </div>
           </div>
         );
     }
   };
 
   return (
-    <div id="fp" ref={fpRef} className={target ? 'show' : ''} aria-hidden="true">
+    <div
+      id="fp"
+      ref={fpRef}
+      className={target ? 'show' : ''}
+      aria-hidden="true"
+    >
       <div className="bar">
         <s />
         <s />
@@ -185,8 +334,9 @@ export default function FloatingPreview({ target, position }) {
         <span id="fpu">{urlLabel}</span>
         <em id="fpl">{tagLabel}</em>
       </div>
+
       <div className="scr" id="fps">
-        {renderVisual()}
+        {renderContent()}
       </div>
     </div>
   );

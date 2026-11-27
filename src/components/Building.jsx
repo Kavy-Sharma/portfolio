@@ -138,7 +138,17 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
                     onPointerMove={handlePointerMove}
                     onPointerLeave={handlePointerLeave}
                     onPointerEnter={(e) => onHoverWindow && onHoverWindow(w, e)}
-                    onFocus={(e) => onHoverWindow && onHoverWindow(w, e)}
+                    onFocus={(e) => {
+                      if (onHoverWindow) {
+                        const r = e.currentTarget.getBoundingClientRect();
+                        let x = r.right + 14;
+                        if (x + 360 > window.innerWidth - 12) {
+                          x = Math.max(16, r.left - 356);
+                        }
+                        const y = Math.max(16, Math.min(window.innerHeight - 240, r.top));
+                        onHoverWindow(w, { clientX: x, clientY: y });
+                      }
+                    }}
                     onBlur={onLeaveWindow}
                     onClick={(e) => handleWindowClick(w, e)}
                   >
