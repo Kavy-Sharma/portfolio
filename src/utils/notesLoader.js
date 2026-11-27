@@ -1,11 +1,29 @@
-import siteData from '../../content/site.json';
-
 // Eagerly import all Markdown files from /content/notes/*.md
 const rawNotesModules = import.meta.glob('/content/notes/*.md', {
   query: '?raw',
   eager: true,
   import: 'default'
 });
+
+export const CATEGORY_COLORS = {
+  Access: '#E5533F',
+  Injection: '#E58A2F',
+  Files: '#2F9E6F',
+  Auth: '#2F7FD0',
+  Logic: '#8B5CD6',
+  Network: '#1F9FB0',
+  Machines: '#C2548A'
+};
+
+export const CATEGORY_ORDER = [
+  'Access',
+  'Injection',
+  'Files',
+  'Auth',
+  'Logic',
+  'Network',
+  'Machines'
+];
 
 function parseFrontmatter(rawContent, fallbackSlug) {
   const match = rawContent.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
@@ -14,15 +32,13 @@ function parseFrontmatter(rawContent, fallbackSlug) {
       metadata: {
         title: fallbackSlug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
         slug: fallbackSlug,
-        date: '2026-02-01',
-        category: 'Field Notes',
-        tags: ['Security'],
-        owasp: [],
-        red: 'I explored this attack path in my lab.',
-        blue: 'I deployed defense controls and verification rules.',
-        summary: rawContent.slice(0, 160).replace(/[#*`_]/g, '') + '...',
-        wordCount: Math.round(rawContent.split(/\s+/).length),
-        readingTimeMinutes: Math.max(1, Math.round(rawContent.split(/\s+/).length / 200))
+        symbol: fallbackSlug.slice(0, 2).toUpperCase(),
+        category: 'Network',
+        readTime: 2,
+        tldr: rawContent.slice(0, 100).replace(/[#*`_]/g, '') + '...',
+        red: 'I explored this attack vector.',
+        blue: 'I enforced strict defense validation.',
+        next: ''
       },
       content: rawContent
     };
@@ -65,10 +81,16 @@ function parseFrontmatter(rawContent, fallbackSlug) {
     }
   }
 
-  if (!metadata.wordCount) {
+  // Fallbacks
+  if (!metadata.symbol) {
+    metadata.symbol = (metadata.title || fallbackSlug).slice(0, 2).toUpperCase();
+  }
+  if (!metadata.category) {
+    metadata.category = 'Access';
+  }
+  if (!metadata.readTime) {
     const words = markdownBody.trim().split(/\s+/).length;
-    metadata.wordCount = words;
-    metadata.readingTimeMinutes = Math.max(1, Math.round(words / 200));
+    metadata.readTime = Math.max(1, Math.round(words / 150));
   }
 
   return {
@@ -77,20 +99,33 @@ function parseFrontmatter(rawContent, fallbackSlug) {
   };
 }
 
-// Parse all discovered notes
+// Parse and process all discovered notes
 const parsedNotes = Object.entries(rawNotesModules).map(([filePath, rawContent]) => {
   const fileName = filePath.split('/').pop().replace(/\.md$/, '');
   const { metadata, content } = parseFrontmatter(rawContent, fileName);
   return {
     ...metadata,
     slug: metadata.slug || fileName,
+    color: CATEGORY_COLORS[metadata.category] || '#1F9FB0',
     rawContent,
     content
   };
 });
 
-// Sort by date descending
-parsedNotes.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+// Sort by standard category order, then title
+parsedNotes.sort((a, b) => {
+  const catA = CATEGORY_ORDER.indexOf(a.category);
+  const catB = CATEGORY_ORDER.indexOf(b.category);
+  const orderA = catA === -1 ? 99 : catA;
+  const orderB = catB === -1 ? 99 : catB;
+  if (orderA !== orderB) return orderA - orderB;
+  return (a.title || '').localeCompare(b.title || '');
+});
+
+// Assign sequential element numbers 01..N
+parsedNotes.forEach((note, idx) => {
+  note.number = String(idx + 1).padStart(2, '0');
+});
 
 export function getAllNotes() {
   return parsedNotes;
@@ -100,6 +135,6 @@ export function getNoteBySlug(slug) {
   return parsedNotes.find((n) => n.slug === slug) || null;
 }
 
-export function getSiteData() {
-  return siteData;
+export function getCategories() {
+  return ['All', ...CATEGORY_ORDER];
 }

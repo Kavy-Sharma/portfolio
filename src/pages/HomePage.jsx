@@ -3,6 +3,7 @@ import LockIntro from '../components/LockIntro';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import Building from '../components/Building';
+import LatestNotesStrip from '../components/LatestNotesStrip';
 import FloatingPreview from '../components/FloatingPreview';
 
 export default function HomePage() {
@@ -44,6 +45,9 @@ export default function HomePage() {
           onHoverWindow={handleHoverWindow}
           onLeaveWindow={handleLeaveWindow}
         />
+
+        {/* 5. Latest Field Notes Strip */}
+        <LatestNotesStrip />
 
         <p className="tag srcap" style={{ margin: '80px 0 30px' }}>
           Portfolio &middot; verified facts from notes &amp; stats

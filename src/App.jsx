@@ -4,8 +4,8 @@ import Lenis from 'lenis';
 import { ThemeProvider } from './context/ThemeContext';
 import HomePage from './pages/HomePage';
 import ProjectStoryPage from './pages/ProjectStoryPage';
-import NotesPlaceholderPage from './pages/NotesPlaceholderPage';
-import NoteDetailPlaceholderPage from './pages/NoteDetailPlaceholderPage';
+import NotesPage from './pages/NotesPage';
+import NoteDetailPage from './pages/NoteDetailPage';
 import ResumePlaceholderPage from './pages/ResumePlaceholderPage';
 import './styles/global.css';
 
@@ -40,8 +40,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/project/:id" element={<ProjectStoryPage />} />
-            <Route path="/notes" element={<NotesPlaceholderPage />} />
-            <Route path="/notes/:slug" element={<NoteDetailPlaceholderPage />} />
+            <Route path="/notes" element={<NotesPage />} />
+            <Route path="/notes/:slug" element={<NoteDetailPage />} />
             <Route path="/resume" element={<ResumePlaceholderPage />} />
             <Route path="*" element={<HomePage />} />
           </Routes>
