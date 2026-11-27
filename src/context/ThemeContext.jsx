@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { flushSync } from 'react-dom';
 
 const ThemeContext = createContext();
 
@@ -42,7 +43,7 @@ export function ThemeProvider({ children }) {
   const setMode = (nextTheme, event) => {
     if (nextTheme === theme) return;
 
-    let x = window.innerWidth / 2;
+    let x = window.innerWidth - 60;
     let y = 30;
     if (event && event.clientX !== undefined) {
       x = event.clientX;
@@ -56,34 +57,16 @@ export function ThemeProvider({ children }) {
     document.documentElement.style.setProperty('--x', `${x}px`);
     document.documentElement.style.setProperty('--y', `${y}px`);
 
-    const maxRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
-
     const apply = () => {
-      setTheme(nextTheme);
+      flushSync(() => {
+        setTheme(nextTheme);
+      });
       document.documentElement.setAttribute('data-theme', nextTheme);
       document.documentElement.setAttribute('data-mode', nextTheme);
     };
 
     if (document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const transition = document.startViewTransition(apply);
-      transition.ready.then(() => {
-        document.documentElement.animate(
-          {
-            clipPath: [
-              `circle(0px at ${x}px ${y}px)`,
-              `circle(${maxRadius}px at ${x}px ${y}px)`
-            ]
-          },
-          {
-            duration: 700,
-            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-            pseudoElement: '::view-transition-new(root)'
-          }
-        );
-      });
+      document.startViewTransition(apply);
     } else {
       apply();
     }
