@@ -6,6 +6,8 @@ import ProjectStoryPage from './pages/ProjectStoryPage';
 import NotesPage from './pages/NotesPage';
 import NoteDetailPage from './pages/NoteDetailPage';
 import ResumePlaceholderPage from './pages/ResumePlaceholderPage';
+import NotFoundPage from './pages/NotFoundPage';
+import SpareKeyModal from './components/SpareKeyModal';
 import './styles/global.css';
 
 /**
@@ -35,13 +37,14 @@ export default function App() {
       <BrowserRouter>
         <ScrollToTop />
         <div className="portfolio-app">
+          <SpareKeyModal />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/project/:id" element={<ProjectStoryPage />} />
             <Route path="/notes" element={<NotesPage />} />
             <Route path="/notes/:slug" element={<NoteDetailPage />} />
             <Route path="/resume" element={<ResumePlaceholderPage />} />
-            <Route path="*" element={<HomePage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
       </BrowserRouter>
