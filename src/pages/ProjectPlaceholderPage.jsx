@@ -17,7 +17,15 @@ export default function ProjectPlaceholderPage() {
   return (
     <div className="wrap" style={{ minHeight: '100vh', paddingBottom: '80px' }}>
       <Header />
-      <div style={{ marginTop: '40px', maxWidth: '720px' }}>
+      <div style={{ marginTop: '40px', maxWidth: '720px', position: 'relative' }}>
+        <button
+          type="button"
+          className="x"
+          onClick={handleBack}
+          aria-label="Close"
+        >
+          Close ✕
+        </button>
         <span className="tag">{project?.status || 'Project Story'}</span>
         <h1 style={{ fontSize: 'clamp(32px, 6vw, 64px)', margin: '12px 0 16px' }}>
           {project?.title || id}

@@ -309,7 +309,8 @@ html[data-theme="attack"] body.in .l1::after {
   z-index: 2;
 }
 
-.wins:hover .win::before {
+.win:hover::before,
+.win:focus-visible::before {
   opacity: 0.85;
 }
 
