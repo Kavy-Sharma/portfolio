@@ -131,7 +131,7 @@ html[data-theme="attack"] .tog [data-m="attack"] {
 
 @keyframes rev {
   to {
-    clip-path: circle(150% at var(--x, 90%) var(--y, 5%));
+    clip-path: circle(180% at var(--x, 90%) var(--y, 5%));
   }
 }
 

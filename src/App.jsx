@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Lenis from 'lenis';
+import React, { useLayoutEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import HomePage from './pages/HomePage';
 import ProjectStoryPage from './pages/ProjectStoryPage';
@@ -9,33 +8,32 @@ import NoteDetailPage from './pages/NoteDetailPage';
 import ResumePlaceholderPage from './pages/ResumePlaceholderPage';
 import './styles/global.css';
 
+/**
+ * Ensures that every page navigation resets the scroll position to the top
+ * (0, 0) instantly, even when navigating via browser back/forward or hash changes.
+ */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useLayoutEffect(() => {
+    if (!window.location.hash) {
+      const prev = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      document.documentElement.style.scrollBehavior = prev;
+    }
+  }, [pathname]);
+
+  return null;
+}
+
 export default function App() {
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true
-    });
-
-    let frameId;
-    function raf(time) {
-      lenis.raf(time);
-      frameId = requestAnimationFrame(raf);
-    }
-    frameId = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(frameId);
-      lenis.destroy();
-    };
-  }, []);
-
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <div className="portfolio-app">
           <Routes>
             <Route path="/" element={<HomePage />} />

@@ -8,6 +8,9 @@ export default function LockIntro({ onUnlocked }) {
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (seen || skipHash || reducedMotion) {
         document.body.classList.add('in');
+        try {
+          sessionStorage.setItem('seen', '1');
+        } catch (e) {}
         return true;
       }
     }
