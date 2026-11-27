@@ -1,32 +1,6 @@
 import { flushSync } from 'react-dom';
 
 /**
- * Creates an expanding, glowing shockwave pulse ring originating from the click coordinates.
- * Gives the circular reveal an unmistakable, high-impact glowing wavefront that travels
- * across the screen alongside the View Transition.
- */
-export function spawnShockwave(x, y) {
-  if (typeof document === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    return;
-  }
-  const existing = document.getElementById('vt-shockwave');
-  if (existing) existing.remove();
-
-  const wave = document.createElement('div');
-  wave.id = 'vt-shockwave';
-  wave.className = 'vt-shockwave-pulse';
-  wave.style.left = `${x}px`;
-  wave.style.top = `${y}px`;
-  document.documentElement.appendChild(wave);
-
-  setTimeout(() => {
-    if (wave && wave.parentNode) {
-      wave.parentNode.removeChild(wave);
-    }
-  }, 900);
-}
-
-/**
  * Executes navigation with the View Transitions API and circular reveal animation.
  * Originates from the clicked element's viewport coordinates (or center fallback).
  * Guarantees that any opened page (project story, note detail, or notes table)
@@ -54,7 +28,6 @@ export function navigateWithReveal(navigate, to, event) {
   if (typeof document !== 'undefined') {
     document.documentElement.style.setProperty('--x', `${x}px`);
     document.documentElement.style.setProperty('--y', `${y}px`);
-    spawnShockwave(x, y);
   }
 
   const performNavigation = () => {
