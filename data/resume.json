@@ -1,0 +1,110 @@
+{
+  "name": "Kavy Sharma",
+  "tagline": "Cybersecurity | VAPT | Web Application & AI Security",
+  "contact": {
+    "location": "Jodhpur, Rajasthan",
+    "phone": "+91 9828505115",
+    "email": "kavysharma196@gmail.com",
+    "linkedin": "https://linkedin.com/in/kavysharma",
+    "linkedinLabel": "linkedin.com/in/kavysharma",
+    "github": "https://github.com/Kavy-Sharma",
+    "githubLabel": "github.com/Kavy-Sharma"
+  },
+  "summary": "Final-year Electronics & Computer Engineering student. Tested web applications and networks for 20+ client environments as a VAPT intern, and built tools for phishing simulation, LLM-agent security and intrusion detection. Looking for an internship in VAPT or AI security.",
+  "experience": [
+    {
+      "company": "TechDefence",
+      "role": "VAPT Intern",
+      "period": "Jun 2026 – Jul 2026",
+      "location": "Ahmedabad, Gujarat",
+      "highlights": [
+        "Performed web application and network VAPT for 20+ client environments across finance, startups, and other sectors using Burp Suite, Nmap, Nessus, and Kali Linux.",
+        "Identified SQL injection, XSS, access-control weaknesses, and firewall misconfigurations through reconnaissance, enumeration, and validation.",
+        "Reported findings with evidence, risk ratings, and remediation guidance, and presented them to clients."
+      ]
+    },
+    {
+      "company": "Defence Research and Development Organisation (DRDO)",
+      "role": "Project Intern",
+      "period": "Jun 2025 – Jul 2025",
+      "location": "Jodhpur, Rajasthan",
+      "highlights": [
+        "Built MATLAB UAV flight-path simulations with monitoring logic that flags routes entering restricted zones."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "PhishSim AI",
+      "badge": "Live Demo",
+      "url": "https://phishsim-ai.onrender.com",
+      "tech": "Python, Flask, MySQL, LLM APIs, OSINT",
+      "highlights": [
+        "Built and deployed a phishing-simulation platform with CSV employee import, role-aware AI email generation, configurable SMTP, and live open, click, and report tracking.",
+        "Developed PhishRecon for lookalike-domain, SPF/DMARC, RDAP, TLS, and subdomain checks, plus email-header, phishing-URL, and password-breach analysis.",
+        "Added AI-assisted risk dashboards and PDF reports; tested SSRF, CSRF, and access-control protections."
+      ]
+    },
+    {
+      "name": "AegisAgent",
+      "badge": "GitHub",
+      "url": "https://github.com/Kavy-Sharma/AegisAgent",
+      "tech": "Python, Ollama, MQTT, ESP32, SHA-256",
+      "highlights": [
+        "Built a nine-stage security gateway between a local LLM agent and its tools/devices: prompt-injection detection, intent checks, RBAC, rate limiting, human approval, and output scanning.",
+        "Added MQTT/ESP32 bridging and hash-chained audit logs; test suite has 399 automated tests."
+      ]
+    },
+    {
+      "name": "SentinelFlow",
+      "badge": "GitHub",
+      "url": "https://github.com/Kavy-Sharma/SentinelFlow",
+      "tech": "Python, Isolation Forest, Streamlit, PCAP",
+      "highlights": [
+        "Built an offline network intrusion detection system combining rules (port scans, SYN/UDP floods, SSH brute force, ARP spoofing) with Isolation Forest anomaly detection.",
+        "Added MITRE ATT&CK mapping, a triage dashboard, and report exports; includes 40 automated tests."
+      ]
+    },
+    {
+      "name": "SafeLine WAF + DVWA Home Lab",
+      "badge": "GitHub",
+      "url": "https://github.com/Kavy-Sharma/safeline-dvwa-waf-lab",
+      "tech": "VirtualBox, Kali, Ubuntu Server, Docker",
+      "highlights": [
+        "Deployed DVWA behind SafeLine WAF/reverse proxy with local DNS and HTTPS; verified routing and responses."
+      ]
+    }
+  ],
+  "skills": {
+    "Security Testing": "Web & Network VAPT, OWASP Top 10, SQLi, XSS, CSRF, SSRF, Access Control/IDOR, SSTI, Command Injection, Path Traversal, File Upload",
+    "AI & Defensive Security": "Prompt-Injection Defence, RBAC, Intrusion Detection, WAF Deployment, MITRE ATT&CK, Phishing & Email Analysis (SPF/DMARC), OSINT",
+    "Tools": "Burp Suite, Nmap, Nessus, Metasploit, Wireshark, SafeLine, Docker, VirtualBox, Git/GitHub",
+    "Programming & Platforms": "Python, Flask, MySQL, Streamlit, MATLAB, Linux, Ollama, MQTT, ESP32"
+  },
+  "achievements": [
+    {
+      "title": "Sea of Secrets CTF (HackItUp, Oct 2026)",
+      "detail": "Solo rank under 150 of 2,500 participants."
+    },
+    {
+      "title": "TryHackMe",
+      "detail": "Top 7% worldwide."
+    },
+    {
+      "title": "PortSwigger Web Security Academy",
+      "detail": "105+ labs solved."
+    },
+    {
+      "title": "Introduction to AI Security",
+      "detail": "AI Security University, Sep 2026."
+    }
+  ],
+  "education": [
+    {
+      "institution": "MBM University",
+      "degree": "Bachelor of Engineering in Electronics & Computer Engineering",
+      "period": "2023 – 2027",
+      "location": "Jodhpur, Rajasthan"
+    }
+  ]
+}

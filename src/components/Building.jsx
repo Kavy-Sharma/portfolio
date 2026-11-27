@@ -282,6 +282,7 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
               >
                 Resume
               </a>{' '}
+              (<a style={{ color: 'var(--ac)' }} href="/resume.pdf" download="Kavy_Sharma_Resume.pdf" title="Download Resume PDF">PDF</a>){' '}
               &middot;{' '}
               <a style={{ color: 'var(--ac)' }} href="https://github.com/Kavy-Sharma" target="_blank" rel="noopener noreferrer">
                 GitHub

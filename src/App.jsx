@@ -5,7 +5,7 @@ import HomePage from './pages/HomePage';
 import ProjectStoryPage from './pages/ProjectStoryPage';
 import NotesPage from './pages/NotesPage';
 import NoteDetailPage from './pages/NoteDetailPage';
-import ResumePlaceholderPage from './pages/ResumePlaceholderPage';
+import ResumePage from './pages/ResumePage';
 import NotFoundPage from './pages/NotFoundPage';
 import SpareKeyModal from './components/SpareKeyModal';
 import './styles/global.css';
@@ -43,7 +43,7 @@ export default function App() {
             <Route path="/project/:id" element={<ProjectStoryPage />} />
             <Route path="/notes" element={<NotesPage />} />
             <Route path="/notes/:slug" element={<NoteDetailPage />} />
-            <Route path="/resume" element={<ResumePlaceholderPage />} />
+            <Route path="/resume" element={<ResumePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
