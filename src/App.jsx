@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Lenis from 'lenis';
 import { ThemeProvider } from './context/ThemeContext';
 import HomePage from './pages/HomePage';
-import ProjectPlaceholderPage from './pages/ProjectPlaceholderPage';
+import ProjectStoryPage from './pages/ProjectStoryPage';
 import NotesPlaceholderPage from './pages/NotesPlaceholderPage';
 import NoteDetailPlaceholderPage from './pages/NoteDetailPlaceholderPage';
 import ResumePlaceholderPage from './pages/ResumePlaceholderPage';
@@ -39,7 +39,7 @@ export default function App() {
         <div className="portfolio-app">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/project/:id" element={<ProjectPlaceholderPage />} />
+            <Route path="/project/:id" element={<ProjectStoryPage />} />
             <Route path="/notes" element={<NotesPlaceholderPage />} />
             <Route path="/notes/:slug" element={<NoteDetailPlaceholderPage />} />
             <Route path="/resume" element={<ResumePlaceholderPage />} />

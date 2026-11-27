@@ -76,12 +76,10 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
       return;
     }
 
-    if (w.floor === 4) {
+    if (w.floor === 4 || w.floor === 2 || w.floor === 1 || w.id === 'wr') {
       navigateWithReveal(navigate, `/project/${w.id}`, e);
     } else if (w.id === 'vt' || w.id === 'net') {
       navigateWithReveal(navigate, '/notes', e);
-    } else if (w.id === 'wr') {
-      navigateWithReveal(navigate, '/notes/machine-write-ups', e);
     } else if (w.url && w.url.startsWith('/')) {
       navigateWithReveal(navigate, w.url, e);
     } else {
