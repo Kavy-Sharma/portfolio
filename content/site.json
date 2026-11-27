@@ -1,0 +1,265 @@
+{
+  "person": {
+    "name": "Kavy Sharma",
+    "location": "Jodhpur",
+    "education": "B.E. Electronics & Computer Engineering, MBM University, 2023-2027",
+    "goal": "Internship and full-time roles in VAPT and AI security",
+    "email": "kavysharma196@gmail.com",
+    "linkedin": "https://linkedin.com/in/kavysharma",
+    "github": "https://github.com/Kavy-Sharma",
+    "tryhackme": "https://tryhackme.com/p/kavysharma196",
+    "hero_headline": "I find the way in. Then I close it.",
+    "hero_sentence": "Security researcher and engineer focusing on VAPT and AI security since mid-2025. I build tools to understand attack paths and verify defenses with verifiable evidence."
+  },
+  "journey": [
+    {
+      "chapter": 1,
+      "title": "Networking and ports",
+      "description": "Understanding network protocols, listening daemons, packet flows, and port reconnaissance through hands-on testing."
+    },
+    {
+      "chapter": 2,
+      "title": "First machines",
+      "description": "Enumerating exposed services and weak configurations on Hack The Box (Meow, Fawn, Dancing) and TryHackMe (Basic Pentesting, RootMe, Kenobi)."
+    },
+    {
+      "chapter": 3,
+      "title": "Web security",
+      "description": "Deep study of OWASP Top 10 vulnerabilities, web application testing, and hands-on PortSwigger Web Security Academy labs."
+    },
+    {
+      "chapter": 4,
+      "title": "Building tools",
+      "description": "Developing security tooling: PhishSim AI for awareness testing, SentinelFlow for hybrid intrusion detection, and AegisAgent for AI action security."
+    },
+    {
+      "chapter": 5,
+      "title": "Real work and proof",
+      "description": "Applying skills to research internships, competitive CTF challenges, client testing engagements, and hardware WAF home labs."
+    }
+  ],
+  "experience": [
+    {
+      "role": "Cybersecurity Intern",
+      "organization": "DRDO",
+      "period": "Jun-Jul 2025",
+      "type": "Research & Defense",
+      "details": "Conducted defense security research and technical analysis in government defense laboratory."
+    },
+    {
+      "role": "Security Testing Intern",
+      "organization": "TechDefence",
+      "period": "Jun-Jul 2026",
+      "type": "VAPT & Security Assessment",
+      "details": "Hands-on vulnerability assessment and penetration testing across web and application targets."
+    }
+  ],
+  "projects": [
+    {
+      "id": "phishsim",
+      "name": "PhishSim AI",
+      "subtitle": "Autonomous Agentic Phishing Simulator & Security Awareness Platform",
+      "status": "Live Demo (Sandbox Mode)",
+      "live_url": "https://phishsim-ai.onrender.com",
+      "github_url": "https://github.com/Kavy-Sharma/phishsim-ai",
+      "stack": [
+        "Python",
+        "Flask",
+        "MySQL",
+        "OpenRouter LLMs",
+        "Vanilla CSS"
+      ],
+      "red": "I simulated targeted credential harvesting emails to test whether users catch suspicious senders and report them.",
+      "blue": "I enforced strict SPF and DMARC policies, configured passive lookalike domain monitoring, and gave employees an instant reporting button.",
+      "description": "Agentic email simulation engine with passive attack-surface auditing (PhishRecon) and dynamic executive risk briefings. The public demo runs in a sandbox mode without outbound email dispatch.",
+      "limits": "Public demo operates in sandbox mode without live email delivery. Full generation engine is private.",
+      "demo_type": "attack_replay"
+    },
+    {
+      "id": "aegis",
+      "name": "AegisAgent",
+      "subtitle": "Action-Layer Security Gateway for Local AI Agents & Smart Hardware",
+      "status": "Working Hardware Integration",
+      "live_url": null,
+      "github_url": "https://github.com/Kavy-Sharma/AegisAgent",
+      "stack": [
+        "Python",
+        "Ollama",
+        "ESP32",
+        "MQTT",
+        "Vanilla CSS"
+      ],
+      "red": "I sent prompt injections, role-spoofs, and encoded payloads to trick the AI agent into executing restricted tool actions.",
+      "blue": "I locked intent scopes before the model runs, validated tool arguments against strict schemas, and required human operator approval for dangerous actions.",
+      "description": "Security gateway interposing between local LLMs (Ollama) and device tools. Implements a 9-gate defense pipeline: injection detection, intent locking, RBAC, parameter guards, rate limiting, human approval, hardware bridging with physical Red Attack Blocked LED, output scanning, and SHA-256 audit chaining.",
+      "limits": "Parameter guard uses declarative keyword and allowlist checks rather than a full SQL AST parser. Intent lock can block valid paraphrased requests. Local network web and MQTT traffic is unencrypted.",
+      "demo_type": "prompt_pipeline"
+    },
+    {
+      "id": "sentinelflow",
+      "name": "SentinelFlow",
+      "subtitle": "Explainable Hybrid Network Intrusion Detection System",
+      "status": "Completed Engine & Streamlit Dashboard",
+      "live_url": null,
+      "github_url": "https://github.com/Kavy-Sharma/SentinelFlow",
+      "stack": [
+        "Python 3.11",
+        "Scapy",
+        "Scikit-learn",
+        "Typer",
+        "Streamlit"
+      ],
+      "red": "I replayed port scans, SYN floods, and ARP poisoning captures to evaluate how stealthy attacks slip past standard filters.",
+      "blue": "I paired deterministic heuristic rules with an unsupervised Isolation Forest baseline to flag traffic anomalies and map MITRE ATT&CK techniques.",
+      "description": "Hybrid NIDS designed for network security triage and offline PCAP analysis. Pairs deterministic heuristic detection (port scans, SYN floods, SSH brute force, ARP spoofing) with an unsupervised Isolation Forest baseline trained on benign traffic, providing ranked feature deviations and incident reports.",
+      "limits": "Designed for offline PCAP packet ingestion and time-windowed triage. Requires labeled baseline captures for Isolation Forest threshold calibration.",
+      "demo_type": "packet_stream"
+    },
+    {
+      "id": "safeline",
+      "name": "SafeLine WAF Lab",
+      "subtitle": "Web Application Firewall & Vulnerability Testbed",
+      "status": "In progress",
+      "live_url": null,
+      "github_url": null,
+      "stack": [
+        "VirtualBox",
+        "Kali Linux",
+        "Ubuntu Server",
+        "SafeLine WAF",
+        "DVWA",
+        "TLS"
+      ],
+      "red": "I mapped direct backend routes to vulnerable DVWA targets to verify application exposure before applying firewall protections.",
+      "blue": "I routed web traffic through SafeLine WAF with TLS termination to inspect incoming requests before they hit backend services.",
+      "description": "Cybersecurity home lab built with VirtualBox, Kali Linux, Ubuntu Server, DVWA, and SafeLine WAF. Completed setup: Kali and Ubuntu VMs, DVWA database, local DNS resolution, self-signed SSL certificate, SafeLine installation, and verified HTTPS reverse proxy routing. Attack and block tests have not yet been conducted.",
+      "limits": "Setup is in progress. The reverse proxy route is established, but attack tests and block verifications are pending. SafeLine has not yet blocked requests in this lab.",
+      "demo_type": "lab_diagram"
+    }
+  ],
+  "notes": [
+    {
+      "slug": "network-ports",
+      "title": "Network Ports and Service Enumeration",
+      "date": "2026-02-17",
+      "category": "Networking",
+      "tags": [
+        "Networking",
+        "Reconnaissance",
+        "Ports",
+        "Protocols"
+      ],
+      "owasp": [
+        "A05:2021-Security Misconfiguration"
+      ],
+      "red": "I probed target ports to map exposed daemons, banner versions, and unauthenticated network services.",
+      "blue": "I closed unneeded ports, bound sensitive services to localhost, and enforced strict firewall rules.",
+      "summary": "Deep dive into TCP/UDP ports, transport protocol mechanics, common service vulnerabilities (FTP, SSH, Telnet, HTTP, DNS, SMTP), and manual reconnaissance methods.",
+      "wordCount": 8442,
+      "readingTimeMinutes": 42
+    },
+    {
+      "slug": "owasp-top-10",
+      "title": "OWASP Top 10 Web Application Vulnerabilities",
+      "date": "2026-02-20",
+      "category": "Web Security",
+      "tags": [
+        "Web Security",
+        "OWASP Top 10",
+        "VAPT",
+        "SQLi",
+        "XSS",
+        "CSRF",
+        "SSTI",
+        "SSRF"
+      ],
+      "owasp": [
+        "A01:2021-Broken Access Control",
+        "A02:2021-Cryptographic Failures",
+        "A03:2021-Injection",
+        "A04:2021-Insecure Design",
+        "A05:2021-Security Misconfiguration",
+        "A06:2021-Vulnerable and Outdated Components",
+        "A07:2021-Identification and Authentication Failures",
+        "A08:2021-Software and Data Integrity Failures",
+        "A09:2021-Security Logging and Monitoring Failures",
+        "A10:2021-Server-Side Request Forgery"
+      ],
+      "red": "I manipulated parameters, bypassed access controls, and injected SQL and command payloads into web applications.",
+      "blue": "I enforced server-side authorization checks, parameterized database queries, and validated all user inputs.",
+      "summary": "Comprehensive analysis of the OWASP Top 10 security risks: Broken Access Control, Cryptographic Failures, SQL and Command Injection, SSRF, SSTI, and defensive mitigations.",
+      "wordCount": 15021,
+      "readingTimeMinutes": 75
+    },
+    {
+      "slug": "htb-learnings",
+      "title": "Hack The Box Starting Point: Core Vulnerability Concepts",
+      "date": "2026-01-27",
+      "category": "VAPT Walkthroughs",
+      "tags": [
+        "HTB",
+        "Starting Point",
+        "Enumeration",
+        "Telnet",
+        "FTP",
+        "SMB"
+      ],
+      "owasp": [
+        "A05:2021-Security Misconfiguration",
+        "A07:2021-Identification and Authentication Failures"
+      ],
+      "red": "I surveyed target systems for default credentials, unauthenticated FTP, and unprotected SMB file shares.",
+      "blue": "I disabled plaintext protocols, enforced robust authentication, and restricted network share access.",
+      "summary": "Key operational lessons learned from HTB Starting Point machines Meow, Fawn, and Dancing: the dangers of default accounts, unauthenticated services, and open SMB shares.",
+      "wordCount": 198,
+      "readingTimeMinutes": 1
+    },
+    {
+      "slug": "htb-walkthroughs",
+      "title": "Hack The Box Starting Point: Tier 0 Walkthroughs",
+      "date": "2026-01-26",
+      "category": "VAPT Walkthroughs",
+      "tags": [
+        "HTB",
+        "Meow",
+        "Fawn",
+        "Dancing",
+        "Telnet",
+        "FTP",
+        "smbclient"
+      ],
+      "owasp": [
+        "A05:2021-Security Misconfiguration",
+        "A07:2021-Identification and Authentication Failures"
+      ],
+      "red": "I connected to misconfigured targets with default usernames and anonymous SMB shares to retrieve challenge flags.",
+      "blue": "I removed default credentials, required authentication for SMB shares, and restricted root logins.",
+      "summary": "Step-by-step technical walkthroughs for Hack The Box Tier 0 machines: Meow (Telnet enumeration), Fawn (anonymous FTP exploitation), and Dancing (SMB share enumeration).",
+      "wordCount": 367,
+      "readingTimeMinutes": 2
+    },
+    {
+      "slug": "thm-machines",
+      "title": "TryHackMe Machines: Basic Pentesting, RootMe & Kenobi",
+      "date": "2026-02-12",
+      "category": "VAPT Walkthroughs",
+      "tags": [
+        "TryHackMe",
+        "Basic Pentesting",
+        "RootMe",
+        "Kenobi",
+        "Webshell",
+        "SUID Privesc"
+      ],
+      "owasp": [
+        "A01:2021-Broken Access Control",
+        "A05:2021-Security Misconfiguration"
+      ],
+      "red": "I found hidden web endpoints, uploaded webshells through weak filters, and exploited misconfigured SUID binaries for root.",
+      "blue": "I validated uploaded file extensions, sanitized server paths, and stripped unnecessary SUID bits from host binaries.",
+      "summary": "Detailed analysis of three TryHackMe machine pathways: service enumeration on Basic Pentesting, webshell deployment on RootMe, and multi-service chaining with SUID privilege escalation on Kenobi.",
+      "wordCount": 434,
+      "readingTimeMinutes": 2
+    }
+  ]
+}

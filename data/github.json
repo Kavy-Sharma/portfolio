@@ -1,0 +1,70 @@
+{
+  "updated_at": "2026-11-25T13:14:32Z",
+  "username": "Kavy-Sharma",
+  "latest_repo": {
+    "name": "phishsim-core",
+    "description": "Private core of Phishsim AI",
+    "html_url": "https://github.com/Kavy-Sharma/phishsim-core",
+    "pushed_at": "2026-11-25T13:14:32Z",
+    "stargazers_count": 0,
+    "language": "HTML"
+  },
+  "repos": [
+    {
+      "name": "phishsim-core",
+      "description": "Private core of Phishsim AI",
+      "html_url": "https://github.com/Kavy-Sharma/phishsim-core",
+      "pushed_at": "2026-11-25T13:14:32Z",
+      "stargazers_count": 0,
+      "language": "HTML"
+    },
+    {
+      "name": "phishsim-ai",
+      "description": null,
+      "html_url": "https://github.com/Kavy-Sharma/phishsim-ai",
+      "pushed_at": "2026-11-22T03:00:27Z",
+      "stargazers_count": 0,
+      "language": "HTML"
+    },
+    {
+      "name": "AegisAgent",
+      "description": null,
+      "html_url": "https://github.com/Kavy-Sharma/AegisAgent",
+      "pushed_at": "2026-11-12T09:27:10Z",
+      "stargazers_count": 0,
+      "language": "Python"
+    },
+    {
+      "name": "safeline-dvwa-waf-lab",
+      "description": null,
+      "html_url": "https://github.com/Kavy-Sharma/safeline-dvwa-waf-lab",
+      "pushed_at": "2026-11-07T13:57:53Z",
+      "stargazers_count": 0,
+      "language": null
+    },
+    {
+      "name": "SentinelFlow",
+      "description": null,
+      "html_url": "https://github.com/Kavy-Sharma/SentinelFlow",
+      "pushed_at": "2026-10-25T11:52:27Z",
+      "stargazers_count": 0,
+      "language": "Python"
+    },
+    {
+      "name": "slot-machine-game",
+      "description": "A fun and interactive console-based slot machine game in Python.",
+      "html_url": "https://github.com/Kavy-Sharma/slot-machine-game",
+      "pushed_at": "2025-12-28T10:48:32Z",
+      "stargazers_count": 0,
+      "language": "Python"
+    },
+    {
+      "name": "Kavy-Sharma",
+      "description": "Config files for my GitHub profile.",
+      "html_url": "https://github.com/Kavy-Sharma/Kavy-Sharma",
+      "pushed_at": "2025-02-24T10:02:21Z",
+      "stargazers_count": 0,
+      "language": null
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kavy Sharma — VAPT & AI Security Portfolio</title>
+    <meta name="description" content="Security researcher and engineer focusing on VAPT, AI security gateway architectures, and intrusion detection." />
+    
+    <!-- OpenGraph / Social Preview -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Kavy Sharma — VAPT & AI Security" />
+    <meta property="og:description" content="I find the way in. Then I close it. Technical security portfolio, projects, and field research." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kavy Sharma — VAPT & AI Security" />
+    <meta name="twitter:description" content="I find the way in. Then I close it. Technical security portfolio, projects, and field research." />
+    <meta name="twitter:image" content="/og-image.png" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google Fonts Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist+Mono:wght@400..700&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+
+    <!-- Prevent theme flash -->
+    <script>
+      (function() {
+        try {
+          var p = new URLSearchParams(window.location.search);
+          var t = p.get('theme') || localStorage.getItem('portfolio-theme') || 'defend';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

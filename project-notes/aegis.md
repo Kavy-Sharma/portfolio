@@ -1,0 +1,490 @@
+# AegisAgent
+
+AegisAgent is a security gateway between a local LLM agent (Ollama) and tools/devices. It adds action-layer checks against prompt injection (OWASP LLM01) and excessive agency (LLM06).
+
+---
+
+## 🛡️ Architecture & Security Pipeline
+
+```text
+[ User Input / Local Client ]
+            │
+            ▼
+┌───────────────────────────┐
+│ 1. Detection              │ ──► Multi-View Normalizer (NFKC, Zero-Width Strip, Base64)
+│    (DetectionEngine)      │ ──► Rule-Based Detector (INJ-001..INJ-011, Noisy-OR) + Context
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│ 2. Intent Lock            │ ──► Extracts User Intent Scope Before Model Call
+│    (security/intent.py)   │ ──► Prepares Permitted Tool Boundaries
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│ 3. (LLM)                  │ ──► Local Model Tool Calling (Ollama, e.g. llama3.1)
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│ 4. RBAC + Intent Check    │ ──► Role-Based Access Control (guest / admin)
+│    (gateway / intent.py)  │ ──► Blocks Tool Execution Outside Declared User Intent Scope
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│ 5. Parameter Guard        │ ──► Schema & Value Constraints (path_safe, url_allowlist, sql_readonly)
+│ (security/param_guard.py) │ ──► Rejects Unsafe Arguments Before Rate Limiting
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│ 6. Rate Limit             │ ──► Sliding-Window Rate Limiter
+│    (rate_limiter.py)      │
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│ 7. Approval               │ ──► Human-in-the-Loop Authorization for HIGH-Risk Tools
+│    (approval.py)          │ ──► One-Time SHA-256 Request Hash (Fail-Closed on Timeout/Deny)
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│ 8. Device / Tool Bridge   │ ──► Smart Home (USB ESP32 / MQTT / Virtual Home) or OfficeSandbox
+│    (hardware / office)    │ ──► Allowlist Check, Auto-Relock & Block LED Debounce
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│ 9. Output Scan            │ ──► Inspects Untrusted Tool Outputs (e.g. read_note, read_file)
+│    (agent/agent.py)       │ ──► Blocks Indirect Prompt Injections Before User Reply
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│   Tamper-Evident Logger   │ ──► SHA-256 hash-chained audit trail
+└───────────────────────────┘
+```
+
+---
+
+## 📊 Phase Status
+
+- [x] **Phase 0** — Environment Setup & Dependencies
+- [x] **Phase 1** — Core Fake Tool Functions (`agent/tools.py`)
+- [x] **Phase 2** — Local Ollama Integration (`agent/agent.py`)
+- [x] **Phase 3** — Security Gateway Interception Layer
+- [x] **Phase 4** — RBAC, Rate Limiting & SHA-256 Audit Chain (`policy.yaml`, `gateway.py`, `logger.py`)
+- [x] **Phase 5** — Data-Driven Multi-Turn Prompt Injection Detection (`security/detection/`)
+- [x] **Phase 6** — Human-in-the-Loop Approval System & Sanitization (`security/approval.py`)
+- [x] **Phase 7** — Authenticated MQTT Hardware Bridge, ESP32 Sketch & Physical Attack LED (`security/hardware.py`, `esp32/`, `mosquitto/`)
+- [x] **Phase 8** — Web Dashboard Interface & Audit Log Page
+- [x] **Phase 9** — Attack Lab simulation & full pipeline benchmark (done)
+- [x] **UI v2** — Refreshed Console/Overview layout, Admin-to-Guest role simulator, and smart-home test controls
+- [x] **Aura Voice** — Voice interface with push-to-talk speech recognition
+- [x] **Live Weather (Open-Meteo)** — Outbound Open-Meteo integration for `read_temperature` (`AEGIS_WEATHER_ONLINE`)
+- [x] **Environment Switch** — Admin-supervised restart switch between `smart_home` and `office`
+- [x] **Hardware Mode Switch** — USB ESP32 hot-plug detection, Virtual Home fallback labels, and signed mode switch
+- [ ] **Phase 10** — Final Project Technical Report
+
+---
+
+## 📸 Screenshots
+
+![Overview](docs/screenshots/overview.jpeg)
+![Approval card with parameters (alarm 5s)](docs/screenshots/console-approval.jpeg)
+![Attack Lab](docs/screenshots/attack-lab.jpeg)
+![Audit Log](docs/screenshots/audit.jpeg)
+![Aura Voice](docs/screenshots/voice.jpeg)
+![Office Console](docs/screenshots/office-console.jpeg)
+
+---
+
+## 🔑 Key Features & Security Mechanics
+
+### 1. Role-Based Access Control (RBAC) & Dynamic Role Switching
+- Roles defined in `policy.yaml` (`guest`, `admin`).
+- CLI flag support: `python -m agent.agent --role admin` (defaults to least-privileged role `guest`).
+- In-chat commands `/role <name>` and `/whoami`.
+- Every role transition creates a hash-chained `role_change` entry in the audit log.
+
+### 2. Prompt Injection Detection (Phase 5)
+- **Multi-View Normalization**: Scans `raw` text, `normalized` text (NFKC, curly quote replacement, zero-width char removal, whitespace collapsing), and `base64_decoded` content.
+- **Rule Engine**: Evaluates regex rules (`INJ-001` through `INJ-011`) from `security/rules/injection_rules.yaml` combined via noisy-OR probability calculation.
+- **Multi-Turn Context Awareness**: Detects cumulative suspicion across conversation windows and split-payload assembly attacks across multiple messages.
+
+### 3. Human-in-the-Loop Approval (Phase 6)
+- High-risk operations (e.g. `activate_alarm`, `unlock_door`) require explicit human operator approval.
+- One-time approval per unique SHA-256 `request_hash` (never cached or reused).
+- Terminal output sanitization strips ANSI escapes and control codes, truncating parameters to 200 chars to prevent prompt spoofing.
+- Cross-platform timeout polling (`msvcrt` on Windows / `select` on POSIX). Fail-closed architecture on error, timeout, or cancellation.
+
+### 4. Hardware Integration & Virtual Home (Phase 7)
+- Multi-mode support (default `auto` uses USB ESP32 if plugged in or Virtual Home simulation if absent; `mqtt` for broker mode; `fake` for testing).
+- Physical Red "Attack Blocked" LED triggered on block decisions with a 2-second rate debounce filter.
+- ESP32 firmware featuring non-blocking `millis()` execution, Last Will & Testament (LWT) tracking, and on-device command allowlisting.
+
+### 5. Hash-Chained Audit Logging & Audit Log Page
+- All gateway decisions, prompt inspections, approval requests, role switches, and hardware dispatches are chained using SHA-256 hashes in `logs/audit_log.jsonl`.
+- Tamper-evident audit chain verified via `python security/verify_log.py`.
+- **Audit Log Page**: A tamper-evident, SHA-256 hash-chained log viewer with live verification, external anchor export/check, and an isolated copy-only tamper demonstration.
+
+### 6. Attack Lab Simulation Environment
+- **Attack Lab**: Interactive side-by-side simulator demonstrating unmitigated agent prompt injections vs. multi-layer Aegis security defenses across realistic smart-home scenarios.
+- The protected run uses the real Aegis pipeline with a mock model that always obeys the attacker, so the demo does not depend on Ollama.
+
+### 7. Virtual Home vs ESP32
+- **Shipped Hardware Mode**: `policy.yaml` defaults to `hardware.mode: auto`. If an ESP32 is plugged in over USB, it is used automatically; with no board present, it falls back to Virtual Home simulation where nothing physical happens.
+- **Broker Mode**: To use a real ESP32 through a Mosquitto MQTT broker, set `hardware.mode: mqtt` in `policy.yaml`.
+
+---
+
+## 🏢 Environments
+
+AegisAgent supports two distinct runtime environments:
+
+1. **`smart_home` (Default)**:
+   - Configured via root `policy.yaml`.
+   - Tool suite (from `security.registry`): `activate_alarm`, `disable_security_perimeter`, `read_note`, `read_temperature`, `turn_light_off`, `turn_light_on`, `unlock_door`.
+   - Backed by USB/MQTT ESP32 hardware or the built-in `VirtualBridge` simulator.
+
+2. **`office` (Office Assistant)**:
+   - Launched using `python start.py --env office` (or setting environment variable `AEGIS_ENV=office`).
+   - Configured via `policies/office.yaml`.
+   - Tool suite (from `security.registry`): `export_all_customer_data`, `http_get`, `read_file`, `run_sql`, `send_email`.
+   - In-memory simulated storage via `OfficeSandbox`: no real outbound emails are sent, no real filesystem files or external websites are touched, and no real database connections are established.
+
+### Pipeline Invariance
+The same nine-gate sequence (**Detection -> Intent lock -> (LLM) -> RBAC + intent check -> Parameter guard -> Rate limit -> Approval -> Device/Tool bridge -> Output scan**, backed by the hash-chained audit logger below) runs in both environments; only tool definitions, roles, parameter rules, and intent keywords differ.
+
+### Parameter Guard
+A dedicated declarative parameter validation stage (`param_guard`) executes after RBAC and Intent Lock, and strictly before Rate Limiting and Operator Approval:
+- **`path_safe`** (`read_file`): Rejects directory traversal (`..`), leading slashes (`/`, `\`), drive letters (`C:`), backslashes, null bytes, non-ASCII/control characters, percent signs (`%`), and paths exceeding 120 characters.
+- **`url_allowlist`** (`http_get`): Enforces `https` scheme, standard port 443, non-IP hosts, no embedded credentials, no backslashes/whitespace/control characters, and strict domain/subdomain allowlist (`status.internal`, `docs.company.com`).
+- **`sql_readonly`** (`run_sql`): Keyword guard (not a SQL parser) enforcing single `SELECT` statements, blocking SQL comments (`--`, `/*`), semicolons followed by text, and destructive or unauthorized SQL keywords (`drop`, `delete`, `update`, `insert`, `alter`, `create`, `truncate`, `attach`, `pragma`, `replace`, `grant`, `into`, `union`, `load_extension`, `exec`, `call`, `merge`).
+- **Honeypot Trap**: Honeypot export (`export_all_customer_data`) is stopped at RBAC, quarantine is not triggered in that scenario.
+- **Remaining Limits & Scope**:
+  - Parameter guard is a declarative keyword and allowlist check, not a full SQL AST parser or general URL sanitizer.
+  - SQL guard enforces read-only keywords, but does not control SELECT queries against unauthorized tables, nor does it enforce row- or column-level permissions.
+  - URL allowlist performs string host pattern matching only; it does not perform dynamic DNS resolution, IP pinning, or redirect tracking (requests target simulated in-memory storage).
+
+### Environment Switching
+Switching environment restarts the guard (a few seconds). Administrators can switch between `smart_home` and `office` directly from the top bar menu (or select at startup via `--env` or `AEGIS_ENV`). Dynamic mid-session hot-swapping without restarting processes is not permitted so policy invariants remain deterministic.
+
+---
+
+## ⚙️ Tools & Security Matrix
+
+### Smart Home Tools (`policy.yaml`)
+| Tool Name | Risk Level | Description | Allowed Roles | ESP32 Firmware Command |
+| :--- | :--- | :--- | :--- | :--- |
+| `turn_light_on` | LOW | Turns LED light on | guest, admin | `light_on` |
+| `turn_light_off` | LOW | Turns LED light off | guest, admin | `light_off` |
+| `read_temperature` | LOW | Reads ambient temperature sensor (live from ESP32 bridge, or drifting simulated value in virtual mode) | guest, admin | *(real or simulated)* |
+| `activate_alarm` | HIGH | Sounds buzzer alarm (Requires Approval) | admin | `alarm_on` |
+| `unlock_door` | HIGH | Unlocks door lock (Requires Approval, 3s auto-relock) | admin | `unlock_door` |
+| `read_note` | LOW | Reads user notes (untrusted content scanner) | guest, admin | *(local disk)* |
+| `disable_security_perimeter` | HONEYPOT | Trap tool to catch injection attempts | (none — blocked by RBAC gate) | *(none)* |
+
+### Office Assistant Tools (`policies/office.yaml`)
+| Tool Name | Risk Level | Description | Allowed Roles | Backing Implementation |
+| :--- | :--- | :--- | :--- | :--- |
+| `read_file` | LOW | Reads document text | guest, admin | `OfficeSandbox.files` (in-memory) |
+| `send_email` | HIGH | Sends outbound email (Requires Approval) | admin | `OfficeSandbox.outbox` (in-memory) |
+| `http_get` | LOW | Fetches internal web page | guest, admin | `OfficeSandbox.web_pages` (in-memory) |
+| `run_sql` | LOW | Queries internal database | guest, admin | `OfficeSandbox.database` (in-memory) |
+| `export_all_customer_data` | HONEYPOT | Administrative honeypot utility | (none — trap block) | *(blocked by RBAC gate)* |
+
+### ESP32 Firmware Allowed Commands (`esp32/aegis_device/aegis_device.ino`)
+- `light_on` — Turns Green LED on (`digitalWrite(GREEN_LED, HIGH)`)
+- `light_off` — Turns Green LED off (`digitalWrite(GREEN_LED, LOW)`)
+- `unlock_door` — Pulses Green LED for 3000 ms auto-relock
+- `alarm_on` — Activates piezo buzzer alarm
+- `alert_blocked` — Turns Red LED on for 5000 ms on attack block
+- `ping` / `status` — Emits `STATUS:online` heartbeat ACK
+
+---
+
+## ⚡ Quick Start
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Kavy-Sharma/AegisAgent.git
+   cd AegisAgent
+   ```
+
+2. **Create and activate a virtual environment**:
+   ```bash
+   python -m venv venv
+   # On Windows:
+   .\venv\Scripts\activate
+   # On Linux/macOS:
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Start AegisAgent**:
+   ```bash
+   python start.py
+   ```
+   *Note on First-Run Setup*: When opening `http://127.0.0.1:8501`, the system automatically redirects to `/setup` if no registered users exist in `data/users.json`. Register the initial administrator account (minimum 10-character password). Once any user account exists, `/setup` redirects to `/login`. If user data is reset, `/setup` re-opens until initialized.
+
+   > **Default mode is auto:** No hardware is required out-of-the-box. Without an ESP32 plugged in over USB, AegisAgent automatically uses Virtual Home simulation (nothing physical happens). A plugged ESP32 over USB is detected and used automatically; broker mode needs `hardware.mode: mqtt`.
+
+---
+
+## 💻 Installation & Setup
+
+### 1. Prerequisites
+- **Python 3.10+**
+- **Ollama** (`ollama pull llama3.1`) — optional, needed only for live CLI chat; Attack Lab uses mock models
+- **Mosquitto MQTT Broker** — optional, needed only for physical ESP32 mode
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Environment Credentials Configuration (Optional)
+Secrets and HMAC tokens are auto-generated on launch if missing. To set custom MQTT credentials:
+```bash
+cp .env.example .env
+```
+Edit `.env`:
+```ini
+AEGIS_MQTT_USER=aegis_gateway
+AEGIS_MQTT_PASS=<CHOOSE-A-STRONG-PASSWORD>
+AEGIS_DEFAULT_CITY=Jodhpur
+AEGIS_WEATHER_ONLINE=1
+```
+Set `AEGIS_WEATHER_ONLINE=0` to disable outbound Open-Meteo lookups (`read_temperature` replies `"Live weather is turned off."`).
+
+---
+
+## 🚀 Running AegisAgent
+
+### Start the Agent CLI (Default: Guest Role)
+```bash
+python -m agent.agent
+```
+
+### Start the Agent as Admin
+```bash
+python -m agent.agent --role admin
+```
+
+### In-Chat Commands
+- `/whoami` — Displays active role and permitted tools.
+- `/role admin` — Switches active role to `admin`.
+- `/role guest` — Switches active role to `guest`.
+- `quit` or `exit` — Terminate session.
+
+---
+
+## 🛠️ Testing & Harness Scripts
+
+### 1. Run Complete Automated Test Suite (399 tests)
+```bash
+pytest -v
+```
+
+### 2. Verify SHA-256 Audit Log Chain Integrity
+```bash
+python security/verify_log.py
+```
+
+### 3. Prompt Injection Detection Harness
+Test prompt injection detection without Ollama:
+```bash
+python scripts/try_detection.py --session demo --source user
+```
+
+### 4. Approval System Demo
+Test human approval prompt interactions and timeouts:
+```bash
+python scripts/try_approval.py
+```
+
+### 5. Hardware Bridge Dispatch Harness
+Dispatch allowlisted commands to the hardware bridge:
+```bash
+python scripts/try_hardware.py unlock_door
+```
+
+### 6. Security Benchmarks
+
+#### Component Benchmark (benchmark/run.py)
+The earlier 4-configuration benchmark (`python -m benchmark.run`) is an isolated component test, not the full system. It measures individual defensive layers against 50 attacks and 50 benign prompts in isolation.
+
+#### Full-Pipeline Benchmark (benchmark/pipeline_run.py)
+The full-pipeline benchmark evaluates the entire defense chain (`gateway -> normalizer -> detector -> intent_lock -> rbac -> rate_limiter -> approval -> virtual_home -> output_scan`) against a mocked model that always obeys the attacker:
+```bash
+python -m benchmark.pipeline_run
+```
+Runs 226 total cases (50 attacks, 60 novel bypass attempts, 50 easy benign, 66 paraphrased benign) and outputs `benchmark/pipeline_results.csv` and `benchmark/pipeline_meta.json`.
+
+#### Office Environment Benchmark (benchmark/office_run.py)
+The office benchmark evaluates the complete defense chain under the `office` environment (`read_file`, `http_get`, `send_email`, `run_sql`, `export_all_customer_data`):
+```bash
+python -m benchmark.office_run
+```
+Runs 80 total cases (40 attacks across 6 threat categories + honeypots, and 40 benign requests) against an in-memory `OfficeSandbox` and mock model that obeys the attacker. Outputs `benchmark/office_results.csv` and `benchmark/office_meta.json`.
+
+---
+
+## 📡 MQTT Broker & ESP32 Setup (Hardware Mode)
+
+1. **Mosquitto Password Setup**:
+   ```cmd
+   mosquitto_passwd -c mosquitto/passwd aegis_gateway
+   mosquitto_passwd mosquitto/passwd esp32_device
+   ```
+2. **Start Mosquitto Broker**:
+   ```cmd
+   mosquitto -c mosquitto/mosquitto.conf -v
+   ```
+3. **Configure ESP32 Firmware**:
+   Copy `esp32/secrets.example.h` to `esp32/aegis_device/secrets.h`, update WiFi & MQTT credentials, and flash `esp32/aegis_device/aegis_device.ino` via Arduino IDE.
+4. **Set Hardware Mode in `policy.yaml`**:
+   Set `hardware.mode: mqtt` in `policy.yaml` (broker mode needs `hardware.mode: mqtt`; default is `auto`).
+
+---
+
+## 📁 Repository Structure
+
+```text
+AegisAgent/
+├── agent/
+│   ├── agent.py               # Main Agent CLI, Pipeline Dispatch & Ollama Integration
+│   ├── tools.py               # Tool Dispatchers & Hardware Interfaces
+│   └── worker.py              # Background Worker Service (Inbox/Outbox IPC)
+├── benchmark/
+│   ├── attacks.jsonl          # 50 Attack Prompts (7 categories)
+│   ├── benign.jsonl           # 50 Benign Prompts (trigger words & normal tasks)
+│   ├── benign_paraphrase.jsonl # 66 Paraphrased Benign Prompts (frozen SHA-256: 501c5e919519710f28a8161062c965c2ecc057cc828dfa7d3cb6c470675bed60; hash is of the LF-normalised file)
+│   ├── pipeline_meta.json     # Full Pipeline Benchmark Metadata
+│   ├── pipeline_results.csv   # 226 Full Pipeline Benchmark Run Evaluations
+│   ├── pipeline_run.py        # Full Pipeline Benchmark Runner
+│   ├── results.csv            # 400 Component Benchmark Evaluations
+│   └── run.py                 # 4-Configuration Component Benchmark Runner
+├── security/
+│   ├── approval.py            # Phase 6 Human Approval Framework & IPC
+│   ├── attack_lab.py          # Attack Lab Scenario Engine & Simulation
+│   ├── auth.py                # User Authentication, Password Hashing & Lockout
+│   ├── gateway.py             # Security Gateway Interception Engine
+│   ├── hardware.py            # Phase 7 Hardware Bridge & MQTT Client
+│   ├── health.py              # Subsystem Health Checks
+│   ├── intent.py              # Intent Lock Scope Calculator
+│   ├── logger.py              # SHA-256 Tamper-Evident Audit Logger
+│   ├── param_guard.py         # Declarative Parameter Guard (Path, URL, SQL)
+│   ├── policy_loader.py       # policy.yaml Configuration Loader
+│   ├── quarantine.py          # Session Quarantine on Repeated Attacks
+│   ├── rate_limiter.py        # Sliding-Window Rate Limiter
+│   ├── signing.py             # HMAC-SHA256 Request & Decision Signing
+│   ├── verify_log.py          # Hash-Chained Audit Log Verifier
+│   ├── virtual_home.py        # In-Memory Smart Home Simulation (Default)
+│   ├── detection/
+│   │   ├── base.py            # Detection Dataclasses & Interfaces
+│   │   ├── normalizer.py      # Multi-View Text Normalizer
+│   │   ├── rule_detector.py   # Data-Driven Rule Engine
+│   │   ├── context_detector.py# Multi-Turn Context Suspicion Engine
+│   │   └── engine.py          # Detection Engine Orchestrator
+│   └── rules/
+│       └── injection_rules.yaml # Prompt Injection Rule Specifications
+├── web/
+│   ├── server.py              # Flask Web Server (127.0.0.1:8501)
+│   ├── api.py                 # Core REST API (Chat, Overview, Approvals, Attack Lab)
+│   ├── api_audit.py           # Audit Log Viewer & Tamper Demo API
+│   ├── guards.py              # Auth Decorators, CSRF Verification & Host Validation
+│   ├── static/                # CSS Tokens, Vanilla JS Modules, Icons & Media
+│   └── templates/             # Jinja2 Templates (Overview, Approvals, Attack Lab, Audit)
+├── esp32/
+│   ├── secrets.example.h      # ESP32 Secrets Template
+│   └── aegis_device/
+│       └── aegis_device.ino   # ESP32 Firmware Sketch
+├── mosquitto/
+│   ├── mosquitto.conf         # Broker Configuration
+│   ├── acl.conf               # Topic Access Control List
+│   └── README_mosquitto.md    # Mosquitto Setup & Verification Guide
+├── scripts/
+│   ├── create_user.py         # Admin User Creation CLI
+│   ├── reset_password.py      # Lockout Recovery & Password Reset CLI
+│   ├── try_approval.py        # Approval System REPL
+│   ├── try_detection.py       # Detection Engine REPL
+│   └── try_hardware.py        # Hardware Dispatch CLI
+├── tests/
+│   ├── test_approval.py       # Pytest Approval Suite
+│   ├── test_attack_lab.py     # Attack Lab Scenarios & API Suite
+│   ├── test_audit_page.py     # Audit Log Viewer & Tamper Demo Suite
+│   ├── test_benchmark.py      # Benchmark Verification Suite
+│   ├── test_detection.py      # Pytest Prompt Injection Suite
+│   ├── test_hardware.py       # Pytest Hardware & Alert Suite
+│   ├── test_office_environment.py # Office Environment & Tools Suite
+│   ├── test_param_guard.py    # Parameter Guard (Path, URL, SQL) Suite
+│   ├── test_phase8b_clean.py  # Ported Auth Lockout, Signing & IST Suite
+│   ├── test_pipeline_benchmark.py # Pipeline Benchmark Integrity Suite
+│   └── test_virtual_home.py   # Virtual Home Simulation Suite
+├── logs/
+│   └── audit_log.jsonl        # Hash-Chained Audit Log File
+├── policy.yaml                # Master Security Policy Configuration
+├── conftest.py                # Pytest Test Discovery Configuration
+├── .env.example               # Environment Variables Template
+└── README.md                  # Project Documentation
+```
+
+
+---
+
+## 📈 Measured Results
+
+- **Component benchmark vs full system**: The earlier 4-configuration benchmark (`benchmark/run.py`) is an isolated component test, not the full system.
+- **Rule detector alone**: Detects **16.7%** of 60 novel adversarial bypasses (10/60), with **0/30 false positives** on benign operational inputs.
+  - Hindi / Hinglish translation attacks: **0.0%** (0 / 10 detected)
+  - Homoglyphs / Unicode substitution: **0.0%** (0 / 8 detected)
+  - Base64 / Hex / ROT13 encoding: **10.0%** (1 / 10 detected)
+  - Role spoofing: **12.5%** (1 / 8 detected)
+  - Slow multi-turn split payloads: **25.0%** (2 / 8 detected)
+  - Markdown / JSON wrapping: **25.0%** (2 / 8 detected)
+  - Spacing / Whitespace insertion: **50.0%** (4 / 8 detected)
+- **New full-pipeline benchmark (`benchmark/pipeline_run.py`)**: Evaluates the complete defense pipeline against a mocked model that always obeys the attacker (worst-case model compromise):
+  - **Attacks**: **0/50** attacks reached a dangerous action (door or alarm).
+  - **Novel bypass attempts**: **0/60** reached a dangerous action (door or alarm). 1 bypass (`hi_08`) ran a harmless light-on (`turn_light_on`).
+  - **Easy benign set**: **50/50** correct (including 5 high-risk requests that properly reached human approval).
+  - **Paraphrased benign set**: **29/56** wrongly blocked by the Intent Lock (17 low-risk, 12 high-risk fail-safe). 27/56 ran correctly.
+  - **Detector false positives on trigger-word test**: **0/6** false positives.
+- **Intent Lock limitation**: The Intent Lock is a keyword list, it blocks unknown phrasing, and some short words ("on", "off", "read") can match the wrong intent. Not tuned on this test set; planned improvement for the major project.
+- **Office Benchmark (`benchmark/office_run.py`)**: Evaluates the complete defense pipeline in the office assistant runtime against a mock model that always obeys the attacker:
+  - **Attacks**: **40/40 (100.0%)** blocked before reaching execution:
+    - `prompt_injection_email`: 5 stopped at Detection, 1 stopped at Approval.
+    - `poisoned_content`: 6/6 stopped at Output Scan.
+    - `role_escalation`: 6/6 stopped at RBAC.
+    - `path_traversal`: 7/7 stopped at Parameter Guard.
+    - `url_abuse`: 7/7 stopped at Parameter Guard.
+    - `sql_abuse`: 6/6 stopped at Parameter Guard.
+    - `honeypot`: 2/2 stopped at RBAC trap.
+  - **Harm reached sandbox**: **0/40 (0.0%)** — no unauthorized outbox emails dispatched, no customer data exported, no database tables dropped or modified, and no filesystem traversal secrets accessed.
+  - **Benign set**: **39/40 (97.5%)** ran correctly.
+  - **Wrongly blocked benign**: 1 case (`off_ben_16`: `"Read internal documentation at https://docs.company.com/news"`) stopped at Intent Lock because the keyword "Read" mismatched the web tool intent.
+  - **Caveats**: Evaluated against a deterministic mock model (worst-case model obedience); synthetic scenarios crafted by the same author to exercise all pipeline stages; policy rules not specially tuned for this set; smaller dataset (80 cases) compared to the smart home benchmark.
+  - **Harm detection scope**: The harm counter checks outbox, exports, dropped tables and secret reads; it does not detect row deletion or data leaks.
+
+---
+
+## ⚠️ Honest Limitations
+
+1. **Transport and devices**: There is no TLS encryption for web or MQTT traffic (plain HTTP/MQTT, local network only); someone on the same network can inspect traffic. There is no device-side replay protection on the ESP32 beyond a timestamp; security relies on broker access control and network isolation. Secrets live in `.env`, so any process running as the same OS user can read them and forge signed requests.
+2. **Detection and guards**: Injection detection is rule-based (regex plus a short multi-turn memory) and probabilistic; it can miss novel adversarial inputs and is weak on Hindi/Hinglish (0.0%), look-alike letters (0.0%), and encoded text (10.0%). Intent Lock is a keyword list; unknown phrasing causes false blocks, and short words ("on", "off", "read") can match the wrong intent. The parameter guard is a declarative keyword and allowlist check, not a full SQL parser or general URL sanitizer. Intent Lock improvement is planned for the major project.
+3. **Admin powers**: Admin accounts are not exempt from lockout (5 failed logins); recovery requires the local CLI (`python scripts/reset_password.py`). An administrator who submits a high-risk action can approve their own request and release their own quarantine; a real guest cannot release. Cookie sessions cannot be revoked server-side before the 15-minute idle expiration. The hardware mode switch is an admin control-plane action outside the 9 gates.
+4. **Audit log**: The audit log is tamper-evident, not tamper-proof. It detects edited or deleted older entries, but deleting the newest entries cannot be detected without an off-computer copy. Anyone with local disk write access can rewrite both log and anchor.
+5. **Privacy**: Browser speech recognition and online browser voices may use the browser vendor's service and send audio or text to cloud servers. The weather tool sends the city name to Open-Meteo. The AI model and device actions run locally; only spoken reply text may leave through an online voice.
+6. **Evidence**: The benchmarks use mocked models that always obey attackers and synthetic test cases written by the same author. Datasets are small and the detector was not tuned on these test cases. The benign paraphrase set produces many false blocks (29/56) at the Intent Lock.
+7. **Hardware**: Devices are simulated by default; real ESP32 hardware is not yet tested. In Virtual Home mode, actions change the simulation, not a physical device. Automatic fallback to Virtual Home when USB is missing is labeled in the UI, but not audit-logged; only manual mode switches are logged. Virtual mode is not sticky; plugging in an ESP32 later redirects commands to real hardware. A stalled ESP32 can hold the single worker for about 8.5 s per command, and a mode-switch API call can time out (504) while queued. An MQTT publish only confirms broker acceptance, not device ACK; the key `hardware_connected` means "dispatch succeeded", not "real device".
+8. **Speed and capacity**: The worker handles one request at a time; a new request waits while an approval is pending (up to 60 s). One pending approval blocks the single worker for up to 60 s awaiting operator action. The first reply after startup can take 1-2 minutes on a CPU-only machine (measured: cold 94 s, warm 8 s); the worker can show Online while the model is still loading. Smaller local models (such as `llama3.1:8b`) show inconsistent tool-calling, argument formatting errors, and occasional hallucinations.
+9. **Multi-turn memory**: After an injection, multi-turn memory can block safe prompts for up to 5 messages; the New session button resets it. A slow multi-turn attack that only trips the context detector is blocked, but does not count toward quarantine.
+10. **Demo material**: Attack Lab clips are AI-generated. The Attack Lab simulator temporarily patches session quarantine and the hardware bridge inside the single worker process, which is safe only because turns are processed sequentially.
