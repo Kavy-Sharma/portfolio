@@ -56,6 +56,7 @@ export function ThemeProvider({ children }) {
 
     document.documentElement.style.setProperty('--x', `${x}px`);
     document.documentElement.style.setProperty('--y', `${y}px`);
+    document.documentElement.classList.remove('vt-back');
 
     const apply = () => {
       flushSync(() => {

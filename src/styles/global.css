@@ -128,17 +128,37 @@ html[data-theme="attack"] .tog [data-m="attack"] {
   mix-blend-mode: normal;
 }
 
-::view-transition-new(root) {
+/* OUTWARDS (Forward / Open): New view expands from circle(0) to circle(150%) */
+html:not(.vt-back)::view-transition-new(root) {
   clip-path: circle(0% at var(--x, 90%) var(--y, 5%));
-  animation: rev 0.85s cubic-bezier(0.6, 0, 0.2, 1) forwards;
+  animation: revOutwards 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-@keyframes rev {
+@keyframes revOutwards {
   0% {
     clip-path: circle(0% at var(--x, 90%) var(--y, 5%));
   }
   100% {
     clip-path: circle(150% at var(--x, 90%) var(--y, 5%));
+  }
+}
+
+/* INWARDS (Back / Close): Old view shrinks inwards into origin from circle(140%) to circle(0) */
+html.vt-back::view-transition-old(root) {
+  animation: revInwards 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+  z-index: 999 !important;
+}
+
+html.vt-back::view-transition-new(root) {
+  z-index: 1 !important;
+}
+
+@keyframes revInwards {
+  0% {
+    clip-path: circle(140% at var(--x, 50%) var(--y, 50%));
+  }
+  100% {
+    clip-path: circle(0% at var(--x, 50%) var(--y, 50%));
   }
 }
 
