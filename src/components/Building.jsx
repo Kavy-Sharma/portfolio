@@ -2,14 +2,54 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import projectsData from '../../data/projects.json';
 import statsData from '../../data/stats.json';
+import githubData from '../../data/github.json';
 import { navigateWithReveal } from '../utils/transitionNavigate';
+import { formatAsOfDate } from '../utils/timeFormat';
 
-// Hook for recent activity (hook for Prompt 5)
+// Hook for recent activity
 export function useRecentActivity(projects) {
   return (projectId) => {
     const p = projects.find((x) => x.id === projectId);
     return Boolean(p?.hasRecentActivity || p?.status === 'Live demo');
   };
+}
+
+/**
+ * Checks if a project's repository had a push in the last 30 days
+ * using public repository telemetry from data/github.json.
+ */
+export function isWindowLit(project, ghData) {
+  if (!project || !ghData?.repos) return false;
+
+  let repoName = null;
+  if (project.url) {
+    const match = project.url.match(/github\.com\/Kavy-Sharma\/([^/]+)/i);
+    if (match) repoName = match[1];
+  }
+  if (!repoName) {
+    const mapping = {
+      phish: 'phishsim-ai',
+      aegis: 'AegisAgent',
+      safe: 'safeline-dvwa-waf-lab',
+      sent: 'SentinelFlow'
+    };
+    repoName = mapping[project.id];
+  }
+  if (!repoName) return false;
+
+  const repoKey = Object.keys(ghData.repos).find(
+    (k) => k.toLowerCase() === repoName.toLowerCase()
+  );
+  if (!repoKey) return false;
+
+  const repo = ghData.repos[repoKey];
+  if (!repo?.pushedAt) return false;
+
+  const pushTime = new Date(repo.pushedAt).getTime();
+  const refTime = ghData.fetchedAt ? new Date(ghData.fetchedAt).getTime() : Date.now();
+  const diffDays = (refTime - pushTime) / (1000 * 60 * 60 * 24);
+
+  return diffDays >= 0 && diffDays <= 30;
 }
 
 export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, onOpenResume }) {
@@ -26,6 +66,7 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
   const totalLabs = stats.portswiggerLabs || 105;
   const thmRank = stats.thmRank || 'top 7%';
   const clientsCount = `${stats.client_tests_plus || 20}+`;
+  const asOfText = formatAsOfDate(stats.asOf);
 
   // Group projects by floor
   const floorConfig = [
@@ -41,13 +82,21 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
       .filter((p) => p.floor === fc.n)
       .map((p) => {
         let desc = p['one-line'] || '';
+        let status = p.status;
         desc = desc.replace('__LABS__', totalLabs).replace('__THM__', thmRank);
         if (p.id === 'td') {
           desc = `VAPT intern. Tested apps for ${clientsCount} clients.`;
         }
+        // PROVE windows read dynamic stats and show "as of <date>"
+        if (p.id === 'ps') {
+          status = asOfText || 'Verified';
+        } else if (p.id === 'thm') {
+          status = asOfText || 'Verified';
+        }
         return {
           ...p,
-          desc
+          desc,
+          status
         };
       })
   }));
@@ -112,7 +161,27 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
   return (
     <div className="bld" id="building">
       <div className="roof">
-        <span className="tag">Kavy's building &middot; 5 floors</span>
+        <div className="roof-left">
+          <span className="tag">Kavy's building &middot; 5 floors</span>
+          <span className="lit-legend" title="Windows with GitHub pushes in the last 30 days">
+            <span className="lit-legend-dot" aria-hidden="true" />
+            Lit = worked on recently
+          </span>
+        </div>
+
+        <div className="rooftop-activity" aria-label="Rooftop 52-week activity map">
+          <div className="rooftop-lights" role="img" aria-label="52-week activity map">
+            {(githubData?.weeks || []).map((w, i) => (
+              <span
+                key={w.startDate || i}
+                className={`roof-light level-${w.level}`}
+                data-level={w.level}
+                title={w.label}
+                aria-label={w.label}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Floors 4 down to 1 */}
@@ -127,12 +196,14 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
             <div className="wins">
               {floor.windows.map((w) => {
                 const isRecent = isWindowActive(w.id);
+                const isLit = isWindowLit(w, githubData);
                 return (
                   <button
                     key={w.id}
                     type="button"
-                    className={`win ${isRecent ? 'on recent-activity' : ''}`}
+                    className={`win ${isLit ? 'is-lit' : ''} ${isRecent ? 'on recent-activity' : ''}`}
                     data-id={w.id}
+                    data-lit={isLit ? 'true' : 'false'}
                     onPointerMove={handlePointerMove}
                     onPointerLeave={handlePointerLeave}
                     onPointerEnter={(e) => onHoverWindow && onHoverWindow(w, e)}

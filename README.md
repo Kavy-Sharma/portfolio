@@ -86,7 +86,22 @@ Deploying this portfolio to [Vercel](https://vercel.com) takes less than 2 minut
 
 ---
 
-## 🔄 How to Update Content & Metrics
+## 📱 How to update
+
+### Editing `data/stats.json` from a phone (3 short steps)
+
+You can update all live portfolio stats (PortSwigger labs, TryHackMe rank, and current "Now" focus) directly from your mobile browser in under 60 seconds:
+
+1. **Open `data/stats.json` on GitHub**: In your mobile browser, navigate to your repo and open `data/stats.json` (e.g. `github.com/Kavy-Sharma/portfolio/blob/main/data/stats.json`).
+2. **Tap the pencil icon to edit**: Tap the **pencil icon** (or the **⋯** menu > **Edit file**). Update `portswiggerLabs`, `thmRank`, `nowLine`, and set `asOf` to today's date (`YYYY-MM-DD`).
+3. **Commit changes directly to `main`**: Scroll down, tap **Commit changes...**, and confirm. Your hosting provider (Vercel) automatically rebuilds and deploys the new stats within seconds.
+
+> [!IMPORTANT]
+> **Never use GitHub commit counts as a headline number**: The core engine of PhishSim AI lives in a private repository (`phishsim-core`), so public GitHub commit counters significantly understate the actual volume of work and technical effort. All headline metrics on the site are driven by verified external proofs and `data/stats.json`.
+
+---
+
+## 🔄 Content & Automation Details
 
 ### 1. How to Add a New Field Note
 The site automatically indexes and generates reader pages for any Markdown file located in `content/notes/`:

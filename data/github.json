@@ -1,70 +1,490 @@
 {
-  "updated_at": "2026-11-25T13:14:32Z",
-  "username": "Kavy-Sharma",
-  "latest_repo": {
-    "name": "phishsim-core",
-    "description": "Private core of Phishsim AI",
-    "html_url": "https://github.com/Kavy-Sharma/phishsim-core",
-    "pushed_at": "2026-11-25T13:14:32Z",
-    "stargazers_count": 0,
-    "language": "HTML"
-  },
-  "repos": [
-    {
+  "fetchedAt": "2026-11-27T17:19:27.585Z",
+  "publicRepoCount": 8,
+  "repos": {
+    "portfolio": {
+      "name": "portfolio",
+      "pushedAt": "2026-11-27T17:06:58Z",
+      "createdAt": "2026-11-27T02:59:23Z",
+      "description": "",
+      "url": "https://github.com/Kavy-Sharma/portfolio"
+    },
+    "phishsim-core": {
       "name": "phishsim-core",
+      "pushedAt": "2026-11-26T18:03:32Z",
+      "createdAt": "2026-05-03T06:24:23Z",
       "description": "Private core of Phishsim AI",
-      "html_url": "https://github.com/Kavy-Sharma/phishsim-core",
-      "pushed_at": "2026-11-25T13:14:32Z",
-      "stargazers_count": 0,
-      "language": "HTML"
+      "url": "https://github.com/Kavy-Sharma/phishsim-core"
     },
-    {
+    "phishsim-ai": {
       "name": "phishsim-ai",
-      "description": null,
-      "html_url": "https://github.com/Kavy-Sharma/phishsim-ai",
-      "pushed_at": "2026-11-22T03:00:27Z",
-      "stargazers_count": 0,
-      "language": "HTML"
+      "pushedAt": "2026-11-22T03:00:27Z",
+      "createdAt": "2026-03-24T10:42:04Z",
+      "description": "",
+      "url": "https://github.com/Kavy-Sharma/phishsim-ai"
     },
-    {
+    "AegisAgent": {
       "name": "AegisAgent",
-      "description": null,
-      "html_url": "https://github.com/Kavy-Sharma/AegisAgent",
-      "pushed_at": "2026-11-12T09:27:10Z",
-      "stargazers_count": 0,
-      "language": "Python"
+      "pushedAt": "2026-11-12T09:27:10Z",
+      "createdAt": "2026-09-28T08:19:48Z",
+      "description": "",
+      "url": "https://github.com/Kavy-Sharma/AegisAgent"
     },
-    {
+    "safeline-dvwa-waf-lab": {
       "name": "safeline-dvwa-waf-lab",
-      "description": null,
-      "html_url": "https://github.com/Kavy-Sharma/safeline-dvwa-waf-lab",
-      "pushed_at": "2026-11-07T13:57:53Z",
-      "stargazers_count": 0,
-      "language": null
+      "pushedAt": "2026-11-07T13:57:53Z",
+      "createdAt": "2026-11-02T15:28:11Z",
+      "description": "",
+      "url": "https://github.com/Kavy-Sharma/safeline-dvwa-waf-lab"
     },
-    {
+    "SentinelFlow": {
       "name": "SentinelFlow",
-      "description": null,
-      "html_url": "https://github.com/Kavy-Sharma/SentinelFlow",
-      "pushed_at": "2026-10-25T11:52:27Z",
-      "stargazers_count": 0,
-      "language": "Python"
+      "pushedAt": "2026-10-25T11:52:27Z",
+      "createdAt": "2026-10-23T17:23:36Z",
+      "description": "",
+      "url": "https://github.com/Kavy-Sharma/SentinelFlow"
     },
-    {
+    "slot-machine-game": {
       "name": "slot-machine-game",
+      "pushedAt": "2025-12-28T10:48:32Z",
+      "createdAt": "2025-02-19T18:22:00Z",
       "description": "A fun and interactive console-based slot machine game in Python.",
-      "html_url": "https://github.com/Kavy-Sharma/slot-machine-game",
-      "pushed_at": "2025-12-28T10:48:32Z",
-      "stargazers_count": 0,
-      "language": "Python"
+      "url": "https://github.com/Kavy-Sharma/slot-machine-game"
+    },
+    "Kavy-Sharma": {
+      "name": "Kavy-Sharma",
+      "pushedAt": "2025-02-24T10:02:21Z",
+      "createdAt": "2025-02-24T10:02:21Z",
+      "description": "Config files for my GitHub profile.",
+      "url": "https://github.com/Kavy-Sharma/Kavy-Sharma"
+    }
+  },
+  "lastPushByRepo": {
+    "portfolio": "2026-11-27T17:06:58Z",
+    "phishsim-core": "2026-11-26T18:03:32Z",
+    "phishsim-ai": "2026-11-22T03:00:27Z",
+    "AegisAgent": "2026-11-12T09:27:10Z",
+    "safeline-dvwa-waf-lab": "2026-11-07T13:57:53Z",
+    "SentinelFlow": "2026-10-25T11:52:27Z",
+    "slot-machine-game": "2025-12-28T10:48:32Z",
+    "Kavy-Sharma": "2025-02-24T10:02:21Z"
+  },
+  "weeks": [
+    {
+      "week": 1,
+      "startDate": "2025-11-28",
+      "endDate": "2025-12-05",
+      "label": "Week of Nov 29",
+      "count": 0,
+      "level": 0
     },
     {
-      "name": "Kavy-Sharma",
-      "description": "Config files for my GitHub profile.",
-      "html_url": "https://github.com/Kavy-Sharma/Kavy-Sharma",
-      "pushed_at": "2025-02-24T10:02:21Z",
-      "stargazers_count": 0,
-      "language": null
+      "week": 2,
+      "startDate": "2025-12-05",
+      "endDate": "2025-12-12",
+      "label": "Week of Dec 6",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 3,
+      "startDate": "2025-12-12",
+      "endDate": "2025-12-19",
+      "label": "Week of Dec 13",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 4,
+      "startDate": "2025-12-19",
+      "endDate": "2025-12-26",
+      "label": "Week of Dec 20",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 5,
+      "startDate": "2025-12-26",
+      "endDate": "2026-01-02",
+      "label": "Week of Dec 27",
+      "count": 1,
+      "level": 1
+    },
+    {
+      "week": 6,
+      "startDate": "2026-01-02",
+      "endDate": "2026-01-09",
+      "label": "Week of Jan 3",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 7,
+      "startDate": "2026-01-09",
+      "endDate": "2026-01-16",
+      "label": "Week of Jan 10",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 8,
+      "startDate": "2026-01-16",
+      "endDate": "2026-01-23",
+      "label": "Week of Jan 17",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 9,
+      "startDate": "2026-01-23",
+      "endDate": "2026-01-30",
+      "label": "Week of Jan 24",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 10,
+      "startDate": "2026-01-30",
+      "endDate": "2026-02-06",
+      "label": "Week of Jan 31",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 11,
+      "startDate": "2026-02-06",
+      "endDate": "2026-02-13",
+      "label": "Week of Feb 7",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 12,
+      "startDate": "2026-02-13",
+      "endDate": "2026-02-20",
+      "label": "Week of Feb 14",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 13,
+      "startDate": "2026-02-20",
+      "endDate": "2026-02-27",
+      "label": "Week of Feb 21",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 14,
+      "startDate": "2026-02-27",
+      "endDate": "2026-03-06",
+      "label": "Week of Feb 28",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 15,
+      "startDate": "2026-03-06",
+      "endDate": "2026-03-13",
+      "label": "Week of Mar 7",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 16,
+      "startDate": "2026-03-13",
+      "endDate": "2026-03-20",
+      "label": "Week of Mar 14",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 17,
+      "startDate": "2026-03-20",
+      "endDate": "2026-03-27",
+      "label": "Week of Mar 21",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 18,
+      "startDate": "2026-03-27",
+      "endDate": "2026-04-03",
+      "label": "Week of Mar 28",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 19,
+      "startDate": "2026-04-03",
+      "endDate": "2026-04-10",
+      "label": "Week of Apr 4",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 20,
+      "startDate": "2026-04-10",
+      "endDate": "2026-04-17",
+      "label": "Week of Apr 11",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 21,
+      "startDate": "2026-04-17",
+      "endDate": "2026-04-24",
+      "label": "Week of Apr 18",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 22,
+      "startDate": "2026-04-24",
+      "endDate": "2026-05-01",
+      "label": "Week of Apr 25",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 23,
+      "startDate": "2026-05-01",
+      "endDate": "2026-05-08",
+      "label": "Week of May 2",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 24,
+      "startDate": "2026-05-08",
+      "endDate": "2026-05-15",
+      "label": "Week of May 9",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 25,
+      "startDate": "2026-05-15",
+      "endDate": "2026-05-22",
+      "label": "Week of May 16",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 26,
+      "startDate": "2026-05-22",
+      "endDate": "2026-05-29",
+      "label": "Week of May 23",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 27,
+      "startDate": "2026-05-29",
+      "endDate": "2026-06-05",
+      "label": "Week of May 30",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 28,
+      "startDate": "2026-06-05",
+      "endDate": "2026-06-12",
+      "label": "Week of Jun 6",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 29,
+      "startDate": "2026-06-12",
+      "endDate": "2026-06-19",
+      "label": "Week of Jun 13",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 30,
+      "startDate": "2026-06-19",
+      "endDate": "2026-06-26",
+      "label": "Week of Jun 20",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 31,
+      "startDate": "2026-06-26",
+      "endDate": "2026-07-03",
+      "label": "Week of Jun 27",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 32,
+      "startDate": "2026-07-03",
+      "endDate": "2026-07-10",
+      "label": "Week of Jul 4",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 33,
+      "startDate": "2026-07-10",
+      "endDate": "2026-07-17",
+      "label": "Week of Jul 11",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 34,
+      "startDate": "2026-07-17",
+      "endDate": "2026-07-24",
+      "label": "Week of Jul 18",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 35,
+      "startDate": "2026-07-24",
+      "endDate": "2026-07-31",
+      "label": "Week of Jul 25",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 36,
+      "startDate": "2026-07-31",
+      "endDate": "2026-08-07",
+      "label": "Week of Aug 1",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 37,
+      "startDate": "2026-08-07",
+      "endDate": "2026-08-14",
+      "label": "Week of Aug 8",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 38,
+      "startDate": "2026-08-14",
+      "endDate": "2026-08-21",
+      "label": "Week of Aug 15",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 39,
+      "startDate": "2026-08-21",
+      "endDate": "2026-08-28",
+      "label": "Week of Aug 22",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 40,
+      "startDate": "2026-08-28",
+      "endDate": "2026-09-04",
+      "label": "Week of Aug 29",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 41,
+      "startDate": "2026-09-04",
+      "endDate": "2026-09-11",
+      "label": "Week of Sep 5",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 42,
+      "startDate": "2026-09-11",
+      "endDate": "2026-09-18",
+      "label": "Week of Sep 12",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 43,
+      "startDate": "2026-09-18",
+      "endDate": "2026-09-25",
+      "label": "Week of Sep 19",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 44,
+      "startDate": "2026-09-25",
+      "endDate": "2026-10-02",
+      "label": "Week of Sep 26",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 45,
+      "startDate": "2026-10-02",
+      "endDate": "2026-10-09",
+      "label": "Week of Oct 3",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 46,
+      "startDate": "2026-10-09",
+      "endDate": "2026-10-16",
+      "label": "Week of Oct 10",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 47,
+      "startDate": "2026-10-16",
+      "endDate": "2026-10-23",
+      "label": "Week of Oct 17",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 48,
+      "startDate": "2026-10-23",
+      "endDate": "2026-10-30",
+      "label": "Week of Oct 24",
+      "count": 2,
+      "level": 1
+    },
+    {
+      "week": 49,
+      "startDate": "2026-10-30",
+      "endDate": "2026-11-06",
+      "label": "Week of Oct 31",
+      "count": 30,
+      "level": 4
+    },
+    {
+      "week": 50,
+      "startDate": "2026-11-06",
+      "endDate": "2026-11-13",
+      "label": "Week of Nov 7",
+      "count": 17,
+      "level": 4
+    },
+    {
+      "week": 51,
+      "startDate": "2026-11-13",
+      "endDate": "2026-11-20",
+      "label": "Week of Nov 14",
+      "count": 0,
+      "level": 0
+    },
+    {
+      "week": 52,
+      "startDate": "2026-11-20",
+      "endDate": "2026-11-27",
+      "label": "Week of Nov 21",
+      "count": 10,
+      "level": 4
     }
   ]
 }
