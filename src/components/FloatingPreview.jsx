@@ -80,8 +80,9 @@ export default function FloatingPreview({ target, position }) {
   const active = target || cachedTarget;
   if (!active) return null;
 
-  const isLive = active.s === 'live';
-  const urlLabel = active.u || 'private work';
+  const isLive = active.previewMode === 'live' || active.s === 'live';
+  const rawUrl = active.url || active.u || 'private work';
+  const urlLabel = rawUrl.replace(/^https?:\/\//, '');
   const tagLabel = isLive ? 'LIVE' : 'AUTO-SHOT';
 
   const renderVisual = () => {
@@ -169,7 +170,7 @@ export default function FloatingPreview({ target, position }) {
             <u className="c" />
             <div />
             <u className="b" />
-            <p>{active?.t || 'Project'} &middot; snapshot refreshed daily</p>
+            <p>{active?.title || active?.t || 'Project'} &middot; snapshot refreshed daily</p>
           </div>
         );
     }

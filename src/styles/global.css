@@ -243,7 +243,14 @@ html[data-theme="attack"] body.in .l1::after {
 .fl b {
   font: 800 34px var(--font-display);
   line-height: 1;
-  color: var(--ink);
+  background: linear-gradient(135deg, var(--h1), var(--h2));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  animation: flow 6s linear infinite;
 }
 
 .fl i {
@@ -282,7 +289,7 @@ html[data-theme="attack"] body.in .l1::after {
 
 .win:hover,
 .win:focus-visible {
-  box-shadow: 0 14px 34px -10px var(--glow);
+  box-shadow: 0 16px 36px -10px var(--glow);
   border-color: var(--ac);
   outline: none;
 }
@@ -295,16 +302,15 @@ html[data-theme="attack"] body.in .l1::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(160px circle at var(--mx, 50%) var(--my, 50%), var(--glow), transparent 70%);
+  background: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%), var(--glow), transparent 70%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
   z-index: 2;
 }
 
-html[data-mode="attack"] .wins:hover .win::before,
-html[data-theme="attack"] .wins:hover .win::before {
-  opacity: 0.8;
+.wins:hover .win::before {
+  opacity: 0.85;
 }
 
 .win .lit {

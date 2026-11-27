@@ -12,7 +12,7 @@ html[data-mode="defend"] {
   --h2: #35B09C;
   --win: #FFFFFF;
   --sky: #D9E8E4;
-  --glow: rgba(10, 102, 112, 0.25);
+  --glow: rgba(10, 102, 112, 0.32);
   
   /* Lock metal tokens */
   --sa: #9fb8b4;

@@ -1,11 +1,18 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import projectsData from '../../data/projects.json';
 import Header from '../components/Header';
+import { navigateWithReveal } from '../utils/transitionNavigate';
 
 export default function ProjectPlaceholderPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const project = projectsData.find((p) => p.id === id);
+
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigateWithReveal(navigate, '/', e);
+  };
 
   return (
     <div className="wrap" style={{ minHeight: '100vh', paddingBottom: '80px' }}>
@@ -25,8 +32,9 @@ export default function ProjectPlaceholderPage() {
         </div>
 
         <p style={{ marginTop: '32px' }}>
-          <Link
-            to="/"
+          <a
+            href="/"
+            onClick={handleBack}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -34,11 +42,12 @@ export default function ProjectPlaceholderPage() {
               color: 'var(--ac)',
               fontWeight: 600,
               textDecoration: 'none',
-              fontSize: '15px'
+              fontSize: '15px',
+              cursor: 'pointer'
             }}
           >
             &larr; Back to building
-          </Link>
+          </a>
         </p>
       </div>
     </div>

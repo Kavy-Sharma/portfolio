@@ -1,9 +1,16 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import { navigateWithReveal } from '../utils/transitionNavigate';
 
 export default function NoteDetailPlaceholderPage() {
   const { slug } = useParams();
+  const navigate = useNavigate();
+
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigateWithReveal(navigate, '/notes', e);
+  };
 
   return (
     <div className="wrap" style={{ minHeight: '100vh', paddingBottom: '80px' }}>
@@ -23,8 +30,9 @@ export default function NoteDetailPlaceholderPage() {
         </div>
 
         <p style={{ marginTop: '32px' }}>
-          <Link
-            to="/notes"
+          <a
+            href="/notes"
+            onClick={handleBack}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -32,11 +40,12 @@ export default function NoteDetailPlaceholderPage() {
               color: 'var(--ac)',
               fontWeight: 600,
               textDecoration: 'none',
-              fontSize: '15px'
+              fontSize: '15px',
+              cursor: 'pointer'
             }}
           >
             &larr; Back to all notes
-          </Link>
+          </a>
         </p>
       </div>
     </div>
