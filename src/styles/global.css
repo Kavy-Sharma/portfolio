@@ -118,20 +118,76 @@ html[data-theme="attack"] .tog [data-m="attack"] {
 }
 
 /* View Transitions circular reveal */
-::view-transition-old(root),
-::view-transition-new(root) {
+::view-transition-group(root) {
   animation: none;
+}
+
+::view-transition-old(root) {
+  animation: vtOldExit 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform-origin: var(--x, 50%) var(--y, 50%);
   mix-blend-mode: normal;
 }
 
 ::view-transition-new(root) {
-  clip-path: circle(0 at var(--x, 90%) var(--y, 5%));
-  animation: rev 0.9s cubic-bezier(0.6, 0, 0.2, 1) forwards;
+  clip-path: circle(0% at var(--x, 90%) var(--y, 5%));
+  animation: rev 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  filter: drop-shadow(0 0 35px var(--ac));
+  mix-blend-mode: normal;
+}
+
+@keyframes vtOldExit {
+  0% {
+    transform: scale(1);
+    filter: brightness(1) contrast(1);
+  }
+  100% {
+    transform: scale(0.95);
+    filter: brightness(0.6) contrast(1.18) saturate(0.7);
+  }
 }
 
 @keyframes rev {
-  to {
-    clip-path: circle(180% at var(--x, 90%) var(--y, 5%));
+  0% {
+    clip-path: circle(0% at var(--x, 90%) var(--y, 5%));
+  }
+  100% {
+    clip-path: circle(150% at var(--x, 90%) var(--y, 5%));
+  }
+}
+
+/* Glowing Shockwave Wavefront Ring */
+.vt-shockwave-pulse {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  margin-top: -7px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2147483647;
+  border: 3px solid var(--ac);
+  box-shadow: 0 0 24px 6px var(--h2), inset 0 0 12px 3px var(--ac);
+  animation: shockwaveExpand 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes shockwaveExpand {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    border-width: 4px;
+  }
+  50% {
+    opacity: 0.9;
+    border-width: 3px;
+  }
+  80% {
+    opacity: 0.5;
+    border-width: 2px;
+  }
+  100% {
+    transform: scale(190);
+    opacity: 0;
+    border-width: 1px;
   }
 }
 

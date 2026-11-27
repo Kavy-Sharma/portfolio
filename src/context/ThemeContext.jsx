@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { flushSync } from 'react-dom';
+import { spawnShockwave } from '../utils/transitionNavigate';
 
 const ThemeContext = createContext();
 
@@ -56,6 +57,7 @@ export function ThemeProvider({ children }) {
 
     document.documentElement.style.setProperty('--x', `${x}px`);
     document.documentElement.style.setProperty('--y', `${y}px`);
+    spawnShockwave(x, y);
 
     const apply = () => {
       flushSync(() => {
