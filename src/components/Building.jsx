@@ -1,137 +1,56 @@
 import React, { useState } from 'react';
-import rawStats from '../../data/stats.json';
+import { useNavigate } from 'react-router-dom';
+import projectsData from '../../data/projects.json';
+import statsData from '../../data/stats.json';
+import { navigateWithReveal } from '../utils/transitionNavigate';
+
+// Hook for recent activity (hook for Prompt 5)
+export function useRecentActivity(projects) {
+  return (projectId) => {
+    const p = projects.find((x) => x.id === projectId);
+    return Boolean(p?.hasRecentActivity || p?.status === 'Live demo');
+  };
+}
 
 export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, onOpenResume }) {
   const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
+  const isWindowActive = useRecentActivity(projectsData);
 
-  const stats = rawStats || {
-    portswigger: { apprentice: [31, 64], practitioner: [67, 175], expert: [7, 40] },
-    tryhackme: { top_percent: 7, profile_url: 'https://tryhackme.com/p/kavysharma196' },
+  const stats = statsData || {
+    portswiggerLabs: 105,
+    thmRank: 'top 7%',
     client_tests_plus: 20
   };
 
-  const totalLabs =
-    (stats.portswigger?.apprentice?.[0] || 0) +
-    (stats.portswigger?.practitioner?.[0] || 0) +
-    (stats.portswigger?.expert?.[0] || 0);
-
-  const thmRank = `top ${stats.tryhackme?.top_percent || 7}%`;
+  const totalLabs = stats.portswiggerLabs || 105;
+  const thmRank = stats.thmRank || 'top 7%';
   const clientsCount = `${stats.client_tests_plus || 20}+`;
 
-  const FLOORS = [
-    {
-      n: 4,
-      l: 'BUILD',
-      windows: [
-        {
-          id: 'phish',
-          t: 'PhishSim AI',
-          d: 'Phishing awareness trainer. Runs live for anyone.',
-          s: 'live',
-          u: 'phishsim-ai.onrender.com',
-          st: 'Live demo'
-        },
-        {
-          id: 'aegis',
-          t: 'AegisAgent',
-          d: 'A 9-gate shield between an AI and real hardware.',
-          s: 'tested',
-          u: 'github.com/Kavy-Sharma/AegisAgent',
-          st: 'Hardware tested'
-        },
-        {
-          id: 'sent',
-          t: 'SentinelFlow',
-          d: 'Early idea, still growing.',
-          s: '',
-          u: 'github.com/Kavy-Sharma/SentinelFlow',
-          st: 'In progress'
-        },
-        {
-          id: 'safe',
-          t: 'SafeLine',
-          d: 'Home lab: a vulnerable app behind a WAF.',
-          s: '',
-          u: 'github.com/Kavy-Sharma/safeline-dvwa-waf-lab',
-          st: 'In progress'
-        }
-      ]
-    },
-    {
-      n: 3,
-      l: 'LEARN',
-      windows: [
-        {
-          id: 'vt',
-          t: 'Vulnerability Table',
-          d: 'Small posts on one weakness each.',
-          u: '#table',
-          st: 'Notes'
-        },
-        {
-          id: 'wr',
-          t: 'Machine write-ups',
-          d: 'Basic Pentesting, RootMe, Kenobi, Meow, Fawn, Dancing.',
-          u: 'tryhackme.com',
-          st: 'Write-ups'
-        },
-        {
-          id: 'net',
-          t: 'Ports & networks',
-          d: 'TCP, UDP, Nmap scripts, the usual services.',
-          u: '#table',
-          st: 'Basics'
-        }
-      ]
-    },
-    {
-      n: 2,
-      l: 'PROVE',
-      windows: [
-        {
-          id: 'ps',
-          t: 'PortSwigger Academy',
-          d: `${totalLabs} labs solved so far. Keeps growing.`,
-          u: 'portswigger.net',
-          st: 'Auto-ish stat'
-        },
-        {
-          id: 'thm',
-          t: 'TryHackMe',
-          d: `Ranked ${thmRank} worldwide.`,
-          u: 'tryhackme.com/p/kavysharma196',
-          st: 'Profile'
-        },
-        {
-          id: 'ctf',
-          t: 'CTF + AI cert',
-          d: 'Sea of Secrets CTF, solo, rank under 150. AI Security cert.',
-          u: '',
-          st: 'Achievements'
-        }
-      ]
-    },
-    {
-      n: 1,
-      l: 'WORK',
-      windows: [
-        {
-          id: 'td',
-          t: 'TechDefence',
-          d: `VAPT intern. Tested apps for ${clientsCount} clients.`,
-          u: '',
-          st: 'Internship'
-        },
-        {
-          id: 'drdo',
-          t: 'DRDO',
-          d: 'Project intern. UAV simulations in MATLAB.',
-          u: '',
-          st: 'Internship'
-        }
-      ]
-    }
+  // Group projects by floor
+  const floorConfig = [
+    { n: 4, l: 'BUILD' },
+    { n: 3, l: 'LEARN' },
+    { n: 2, l: 'PROVE' },
+    { n: 1, l: 'WORK' }
   ];
+
+  const FLOORS = floorConfig.map((fc) => ({
+    ...fc,
+    windows: projectsData
+      .filter((p) => p.floor === fc.n)
+      .map((p) => {
+        let desc = p['one-line'] || '';
+        desc = desc.replace('__LABS__', totalLabs).replace('__THM__', thmRank);
+        if (p.id === 'td') {
+          desc = `VAPT intern. Tested apps for ${clientsCount} clients.`;
+        }
+        return {
+          ...p,
+          desc
+        };
+      })
+  }));
 
   const handlePointerMove = (e) => {
     const el = e.currentTarget;
@@ -151,6 +70,25 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
     if (onLeaveWindow) onLeaveWindow();
   };
 
+  const handleWindowClick = (w, e) => {
+    if (onOpenWindow) {
+      onOpenWindow(w, e);
+      return;
+    }
+
+    if (w.floor === 4) {
+      navigateWithReveal(navigate, `/project/${w.id}`, e);
+    } else if (w.id === 'vt' || w.id === 'net') {
+      navigateWithReveal(navigate, '/notes', e);
+    } else if (w.id === 'wr') {
+      navigateWithReveal(navigate, '/notes/machine-write-ups', e);
+    } else if (w.url && w.url.startsWith('/')) {
+      navigateWithReveal(navigate, w.url, e);
+    } else {
+      navigateWithReveal(navigate, `/project/${w.id}`, e);
+    }
+  };
+
   const handleCopyEmail = () => {
     const email = 'kavysharma196@gmail.com';
     if (navigator.clipboard) {
@@ -162,6 +100,15 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     }
+  };
+
+  const handleResumeNav = (e) => {
+    e.preventDefault();
+    if (onOpenResume) {
+      onOpenResume(e);
+      return;
+    }
+    navigateWithReveal(navigate, '/resume', e);
   };
 
   return (
@@ -180,30 +127,33 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
             </div>
 
             <div className="wins">
-              {floor.windows.map((w) => (
-                <button
-                  key={w.id}
-                  type="button"
-                  className={`win ${w.s ? 'on' : ''}`}
-                  data-id={w.id}
-                  onPointerMove={handlePointerMove}
-                  onPointerLeave={handlePointerLeave}
-                  onPointerEnter={(e) => onHoverWindow && onHoverWindow(w, e)}
-                  onFocus={(e) => onHoverWindow && onHoverWindow(w, e)}
-                  onBlur={onLeaveWindow}
-                  onClick={(e) => onOpenWindow && onOpenWindow(w, e)}
-                >
-                  <div className="lit" />
-                  <div className="cap">
-                    <span className="st">
-                      {w.s === 'live' && <i className="dot" />}
-                      {w.st}
-                    </span>
-                    <h3>{w.t}</h3>
-                    <p>{w.d}</p>
-                  </div>
-                </button>
-              ))}
+              {floor.windows.map((w) => {
+                const isRecent = isWindowActive(w.id);
+                return (
+                  <button
+                    key={w.id}
+                    type="button"
+                    className={`win ${isRecent ? 'on recent-activity' : ''}`}
+                    data-id={w.id}
+                    onPointerMove={handlePointerMove}
+                    onPointerLeave={handlePointerLeave}
+                    onPointerEnter={(e) => onHoverWindow && onHoverWindow(w, e)}
+                    onFocus={(e) => onHoverWindow && onHoverWindow(w, e)}
+                    onBlur={onLeaveWindow}
+                    onClick={(e) => handleWindowClick(w, e)}
+                  >
+                    <div className="lit" />
+                    <div className="cap">
+                      <span className="st">
+                        {w.previewMode === 'live' && <i className="dot" />}
+                        {w.status}
+                      </span>
+                      <h3>{w.title}</h3>
+                      <p>{w.desc}</p>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         ))}
@@ -247,12 +197,9 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
             <p style={{ marginTop: '8px', fontSize: '14px' }}>
               <a
                 style={{ color: 'var(--ac)' }}
-                href="#resume"
+                href="/resume"
                 className="rl2"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (onOpenResume) onOpenResume(e);
-                }}
+                onClick={handleResumeNav}
               >
                 Resume
               </a>{' '}

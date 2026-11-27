@@ -1,0 +1,145 @@
+[
+  {
+    "id": "phish",
+    "title": "PhishSim AI",
+    "one-line": "Phishing awareness trainer. Runs live for anyone.",
+    "floor": 4,
+    "status": "Live demo",
+    "url": "https://phishsim-ai.onrender.com",
+    "previewMode": "live",
+    "story": "content/projects/phishsim.md",
+    "hasRecentActivity": true
+  },
+  {
+    "id": "aegis",
+    "title": "AegisAgent",
+    "one-line": "A 9-gate shield between an AI and real hardware.",
+    "floor": 4,
+    "status": "Hardware tested",
+    "url": "https://github.com/Kavy-Sharma/AegisAgent",
+    "previewMode": "shot",
+    "story": "content/projects/aegis.md",
+    "hasRecentActivity": true
+  },
+  {
+    "id": "sent",
+    "title": "SentinelFlow",
+    "one-line": "Early idea, still growing.",
+    "floor": 4,
+    "status": "In progress",
+    "url": "https://github.com/Kavy-Sharma/SentinelFlow",
+    "previewMode": "shot",
+    "story": "content/projects/sentinelflow.md",
+    "hasRecentActivity": false
+  },
+  {
+    "id": "safe",
+    "title": "SafeLine",
+    "one-line": "Home lab: a vulnerable app behind a WAF.",
+    "floor": 4,
+    "status": "In progress",
+    "url": "https://github.com/Kavy-Sharma/safeline-dvwa-waf-lab",
+    "previewMode": "shot",
+    "story": "content/projects/safeline.md",
+    "hasRecentActivity": false
+  },
+  {
+    "id": "vt",
+    "title": "Vulnerability Table",
+    "one-line": "Small posts on one weakness each.",
+    "floor": 3,
+    "status": "Notes",
+    "url": "/notes",
+    "previewMode": "shot",
+    "story": "",
+    "hasRecentActivity": false
+  },
+  {
+    "id": "wr",
+    "title": "Machine write-ups",
+    "one-line": "Basic Pentesting, RootMe, Kenobi, Meow, Fawn, Dancing.",
+    "floor": 3,
+    "status": "Write-ups",
+    "url": "https://tryhackme.com/p/kavysharma196",
+    "previewMode": "shot",
+    "story": "",
+    "hasRecentActivity": false
+  },
+  {
+    "id": "net",
+    "title": "Ports & networks",
+    "one-line": "TCP, UDP, Nmap scripts, the usual services.",
+    "floor": 3,
+    "status": "Basics",
+    "url": "/notes",
+    "previewMode": "shot",
+    "story": "",
+    "hasRecentActivity": false
+  },
+  {
+    "id": "ps",
+    "title": "PortSwigger Academy",
+    "one-line": "__LABS__ labs solved so far. Keeps growing.",
+    "floor": 2,
+    "status": "Auto-ish stat",
+    "url": "https://portswigger.net",
+    "previewMode": "shot",
+    "story": "",
+    "hasRecentActivity": true
+  },
+  {
+    "id": "thm",
+    "title": "TryHackMe",
+    "one-line": "Ranked __THM__ worldwide.",
+    "floor": 2,
+    "status": "Profile",
+    "url": "https://tryhackme.com/p/kavysharma196",
+    "previewMode": "shot",
+    "story": "",
+    "hasRecentActivity": false
+  },
+  {
+    "id": "ctf",
+    "title": "CTF + AI cert",
+    "one-line": "Sea of Secrets CTF, solo, rank under 150. AI Security cert.",
+    "floor": 2,
+    "status": "Achievements",
+    "url": "",
+    "previewMode": "shot",
+    "story": "",
+    "hasRecentActivity": false
+  },
+  {
+    "id": "td",
+    "title": "TechDefence",
+    "one-line": "VAPT intern. Tested apps for 20+ clients.",
+    "floor": 1,
+    "status": "Internship",
+    "url": "",
+    "previewMode": "shot",
+    "story": "",
+    "hasRecentActivity": false
+  },
+  {
+    "id": "drdo",
+    "title": "DRDO",
+    "one-line": "Project intern. UAV simulations in MATLAB.",
+    "floor": 1,
+    "status": "Internship",
+    "url": "",
+    "previewMode": "shot",
+    "story": "",
+    "hasRecentActivity": false
+  },
+  {
+    "id": "contact",
+    "title": "Contact",
+    "one-line": "Open to internships and jobs. Say hi, the door is open.",
+    "floor": "G",
+    "status": "Contact",
+    "url": "mailto:kavysharma196@gmail.com",
+    "previewMode": "shot",
+    "story": "",
+    "hasRecentActivity": false
+  }
+]

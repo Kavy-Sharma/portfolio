@@ -5,11 +5,15 @@ const ThemeContext = createContext();
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const queryTheme = params.get('theme') || params.get('mode');
-      if (queryTheme === 'attack' || queryTheme === 'defend') return queryTheme;
-      const saved = localStorage.getItem('portfolio-theme') || localStorage.getItem('mode');
-      if (saved === 'attack' || saved === 'defend') return saved;
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const queryTheme = params.get('theme') || params.get('mode');
+        if (queryTheme === 'attack' || queryTheme === 'defend') return queryTheme;
+        const saved = localStorage.getItem('portfolio-theme') || localStorage.getItem('mode');
+        if (saved === 'attack' || saved === 'defend') return saved;
+      } catch (e) {
+        // Fallback gracefully if localStorage is restricted
+      }
     }
     return 'defend';
   });
@@ -17,8 +21,12 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     document.documentElement.setAttribute('data-mode', theme);
-    localStorage.setItem('portfolio-theme', theme);
-    localStorage.setItem('mode', theme);
+    try {
+      localStorage.setItem('portfolio-theme', theme);
+      localStorage.setItem('mode', theme);
+    } catch (e) {
+      // Ignore localStorage write failures (e.g. private mode)
+    }
   }, [theme]);
 
   // Track cursor position for subtle radial light behind elements

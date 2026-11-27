@@ -1,9 +1,38 @@
 {
+  "asOf": "2026-11-25",
+  "portswiggerLabs": 105,
+  "thmRank": "top 7%",
+  "nowLine": "Building AegisAgent hardware defense & practicing PortSwigger labs",
   "updated": "2026-11-25",
-  "portswigger": { "apprentice": [31, 64], "practitioner": [67, 175], "expert": [7, 40] },
-  "tryhackme": { "top_percent": 7, "profile_url": "https://tryhackme.com/p/kavysharma196" },
-  "htb_starting_point": ["Meow", "Fawn", "Dancing"],
-  "ctf": [{ "name": "Sea of Secrets (HackItUp)", "date": "2026-10", "mode": "solo", "rank_under": 150, "participants": null }],
-  "certificates": [{ "name": "Introduction to AI Security", "issuer": "AI Security University", "date": "2026-09" }],
+  "portswigger": {
+    "apprentice": [31, 64],
+    "practitioner": [67, 175],
+    "expert": [7, 40]
+  },
+  "tryhackme": {
+    "top_percent": 7,
+    "profile_url": "https://tryhackme.com/p/kavysharma196"
+  },
+  "htb_starting_point": [
+    "Meow",
+    "Fawn",
+    "Dancing"
+  ],
+  "ctf": [
+    {
+      "name": "Sea of Secrets (HackItUp)",
+      "date": "2026-10",
+      "mode": "solo",
+      "rank_under": 150,
+      "participants": null
+    }
+  ],
+  "certificates": [
+    {
+      "name": "Introduction to AI Security",
+      "issuer": "AI Security University",
+      "date": "2026-09"
+    }
+  ],
   "client_tests_plus": 20
 }

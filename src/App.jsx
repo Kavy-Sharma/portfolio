@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
-import { Route, Switch } from 'wouter';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Lenis from 'lenis';
 import { ThemeProvider } from './context/ThemeContext';
 import HomePage from './pages/HomePage';
-import AegisStoryPage from './pages/AegisStoryPage';
+import ProjectPlaceholderPage from './pages/ProjectPlaceholderPage';
+import NotesPlaceholderPage from './pages/NotesPlaceholderPage';
+import NoteDetailPlaceholderPage from './pages/NoteDetailPlaceholderPage';
+import ResumePlaceholderPage from './pages/ResumePlaceholderPage';
 import './styles/global.css';
 
 export default function App() {
@@ -32,13 +35,18 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <div className="portfolio-app">
-        <Switch>
-          <Route path="/" component={HomePage} />
-          <Route path="/projects/aegis" component={AegisStoryPage} />
-          <Route component={HomePage} />
-        </Switch>
-      </div>
+      <BrowserRouter>
+        <div className="portfolio-app">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/project/:id" element={<ProjectPlaceholderPage />} />
+            <Route path="/notes" element={<NotesPlaceholderPage />} />
+            <Route path="/notes/:slug" element={<NoteDetailPlaceholderPage />} />
+            <Route path="/resume" element={<ResumePlaceholderPage />} />
+            <Route path="*" element={<HomePage />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
     </ThemeProvider>
   );
 }
