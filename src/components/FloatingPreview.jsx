@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import statsData from '../../data/stats.json';
+import CategoryArt from '../assets/art';
 
 // Aegis rotating frames (overview -> setup -> hardware, 1.8s each)
 const AEGIS_FRAMES = [
@@ -496,8 +497,8 @@ export default function FloatingPreview({ target, position }) {
                   className="mono"
                   style={{
                     fontSize: '10px',
-                    color: '#E58A2F',
-                    background: 'rgba(229,138,47,0.12)',
+                    color: '#B45309',
+                    background: 'rgba(180,83,9,0.12)',
                     padding: '2px 7px',
                     borderRadius: '99px',
                     fontWeight: 700,
@@ -562,7 +563,7 @@ export default function FloatingPreview({ target, position }) {
           />
         );
 
-      // 7. TechDefence: designed card
+      // 7. TechDefence: designed card with Access illustration
       case 'td':
         return (
           <div
@@ -576,22 +577,29 @@ export default function FloatingPreview({ target, position }) {
             }}
           >
             <div>
-              <span
-                className="mono"
-                style={{
-                  fontSize: '10px',
-                  color: 'var(--ac)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  fontWeight: 600
-                }}
-              >
-                VAPT INTERNSHIP &middot; JUN&ndash;JUL 2026
-              </span>
-              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-                TechDefence
-              </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                <div>
+                  <span
+                    className="mono"
+                    style={{
+                      fontSize: '10px',
+                      color: 'var(--ac)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      fontWeight: 600
+                    }}
+                  >
+                    VAPT INTERNSHIP &middot; JUN&ndash;JUL 2026
+                  </span>
+                  <h4 style={{ margin: '4px 0 2px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                    TechDefence
+                  </h4>
+                </div>
+                <div className="preview-card-art" style={{ flexShrink: 0, padding: '4px', background: 'var(--bg)', border: '1px solid var(--ln)', borderRadius: '8px' }}>
+                  <CategoryArt category="Access" size={36} animated={false} />
+                </div>
+              </div>
+              <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
                 Worked on network VAPT with Nessus and Nmap, firewall reviews, CIS configuration audits, and web testing.
               </p>
             </div>
@@ -612,7 +620,7 @@ export default function FloatingPreview({ target, position }) {
           </div>
         );
 
-      // 8. DRDO: designed card
+      // 8. DRDO: designed card with Logic illustration
       case 'drdo':
         return (
           <div
@@ -626,22 +634,29 @@ export default function FloatingPreview({ target, position }) {
             }}
           >
             <div>
-              <span
-                className="mono"
-                style={{
-                  fontSize: '10px',
-                  color: 'var(--ac)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  fontWeight: 600
-                }}
-              >
-                DEFENSE RESEARCH &middot; JUN&ndash;JUL 2025
-              </span>
-              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-                Defence Research &amp; Development Organisation
-              </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                <div>
+                  <span
+                    className="mono"
+                    style={{
+                      fontSize: '10px',
+                      color: 'var(--ac)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      fontWeight: 600
+                    }}
+                  >
+                    DEFENSE RESEARCH &middot; JUN&ndash;JUL 2025
+                  </span>
+                  <h4 style={{ margin: '4px 0 2px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                    Defence Research &amp; Development Organisation
+                  </h4>
+                </div>
+                <div className="preview-card-art" style={{ flexShrink: 0, padding: '4px', background: 'var(--bg)', border: '1px solid var(--ln)', borderRadius: '8px' }}>
+                  <CategoryArt category="Logic" size={36} animated={false} />
+                </div>
+              </div>
+              <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
                 Built MATLAB UAV flight-path simulations with monitoring logic that flags routes entering restricted zones.
               </p>
             </div>
@@ -659,7 +674,7 @@ export default function FloatingPreview({ target, position }) {
           </div>
         );
 
-      // 9. CTF & AI Cert: designed card
+      // 9. CTF & AI Cert: designed card with Auth illustration
       case 'ctf':
         return (
           <div
@@ -673,22 +688,29 @@ export default function FloatingPreview({ target, position }) {
             }}
           >
             <div>
-              <span
-                className="mono"
-                style={{
-                  fontSize: '10px',
-                  color: 'var(--ac)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  fontWeight: 600
-                }}
-              >
-                ACHIEVEMENTS &middot; OCT 2026 &amp; SEP 2026
-              </span>
-              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-                Sea of Secrets CTF &amp; AI Security Cert
-              </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                <div>
+                  <span
+                    className="mono"
+                    style={{
+                      fontSize: '10px',
+                      color: 'var(--ac)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      fontWeight: 600
+                    }}
+                  >
+                    ACHIEVEMENTS &middot; OCT 2026 &amp; SEP 2026
+                  </span>
+                  <h4 style={{ margin: '4px 0 2px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                    Sea of Secrets CTF &amp; AI Security Cert
+                  </h4>
+                </div>
+                <div className="preview-card-art" style={{ flexShrink: 0, padding: '4px', background: 'var(--bg)', border: '1px solid var(--ln)', borderRadius: '8px' }}>
+                  <CategoryArt category="Auth" size={36} animated={false} />
+                </div>
+              </div>
+              <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
                 Sea of Secrets CTF solo rank under 150 of 2,500. Introduction to AI Security certification (AI Security University).
               </p>
             </div>
@@ -706,7 +728,7 @@ export default function FloatingPreview({ target, position }) {
           </div>
         );
 
-      // 10. Machine write-ups: designed card
+      // 10. Machine write-ups: designed card with Machines illustration
       case 'wr':
         return (
           <div
@@ -720,22 +742,29 @@ export default function FloatingPreview({ target, position }) {
             }}
           >
             <div>
-              <span
-                className="mono"
-                style={{
-                  fontSize: '10px',
-                  color: 'var(--ac)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  fontWeight: 600
-                }}
-              >
-                TRYHACKME &middot; WALKTHROUGHS
-              </span>
-              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-                Machine Write-ups
-              </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                <div>
+                  <span
+                    className="mono"
+                    style={{
+                      fontSize: '10px',
+                      color: 'var(--ac)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      fontWeight: 600
+                    }}
+                  >
+                    TRYHACKME &middot; WALKTHROUGHS
+                  </span>
+                  <h4 style={{ margin: '4px 0 2px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                    Machine Write-ups
+                  </h4>
+                </div>
+                <div className="preview-card-art" style={{ flexShrink: 0, padding: '4px', background: 'var(--bg)', border: '1px solid var(--ln)', borderRadius: '8px' }}>
+                  <CategoryArt category="Machines" size={36} animated={false} />
+                </div>
+              </div>
+              <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
                 Basic Pentesting, RootMe, Kenobi, Meow, Fawn, and Dancing. Port enumeration, service exploitation, and privilege escalation.
               </p>
             </div>
@@ -748,6 +777,60 @@ export default function FloatingPreview({ target, position }) {
               </span>
               <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>
                 Field Walkthroughs
+              </span>
+            </div>
+          </div>
+        );
+
+      // Ports & networks: designed card with Network illustration
+      case 'net':
+        return (
+          <div
+            style={{
+              padding: '16px 18px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              background: 'var(--surf)'
+            }}
+          >
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                <div>
+                  <span
+                    className="mono"
+                    style={{
+                      fontSize: '10px',
+                      color: 'var(--ac)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      fontWeight: 600
+                    }}
+                  >
+                    FIELD RESEARCH &middot; PROTOCOLS
+                  </span>
+                  <h4 style={{ margin: '4px 0 2px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                    Ports &amp; Networks
+                  </h4>
+                </div>
+                <div className="preview-card-art" style={{ flexShrink: 0, padding: '4px', background: 'var(--bg)', border: '1px solid var(--ln)', borderRadius: '8px' }}>
+                  <CategoryArt category="Network" size={36} animated={false} />
+                </div>
+              </div>
+              <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
+                TCP, UDP, Nmap scripts, and network service inspection: FTP, SSH, DNS.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Nmap NSE
+              </span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                TCP vs UDP
+              </span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>
+                Interactive /notes
               </span>
             </div>
           </div>
@@ -797,7 +880,7 @@ export default function FloatingPreview({ target, position }) {
           </div>
         );
 
-      // Default: Vulnerability Table / Notes
+      // Default: Vulnerability Table / Notes (with Files illustration)
       default:
         return (
           <div
@@ -811,22 +894,29 @@ export default function FloatingPreview({ target, position }) {
             }}
           >
             <div>
-              <span
-                className="mono"
-                style={{
-                  fontSize: '10px',
-                  color: 'var(--ac)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  fontWeight: 600
-                }}
-              >
-                FIELD RESEARCH &middot; 2-MIN READS
-              </span>
-              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-                {active.title}
-              </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                <div>
+                  <span
+                    className="mono"
+                    style={{
+                      fontSize: '10px',
+                      color: 'var(--ac)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      fontWeight: 600
+                    }}
+                  >
+                    FIELD RESEARCH &middot; 2-MIN READS
+                  </span>
+                  <h4 style={{ margin: '4px 0 2px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                    {active.title || 'Vulnerability Table'}
+                  </h4>
+                </div>
+                <div className="preview-card-art" style={{ flexShrink: 0, padding: '4px', background: 'var(--bg)', border: '1px solid var(--ln)', borderRadius: '8px' }}>
+                  <CategoryArt category="Files" size={36} animated={false} />
+                </div>
+              </div>
+              <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
                 {active.desc || active['one-line'] || 'Short, plain-language field notes cut from real lab exercises.'}
               </p>
             </div>

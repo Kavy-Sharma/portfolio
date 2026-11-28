@@ -180,7 +180,6 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
                 className={`roof-light level-${w.level}`}
                 data-level={w.level}
                 title={w.label}
-                aria-label={w.label}
               />
             ))}
           </div>
@@ -190,7 +189,7 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
       {/* Floors 4 down to 1 */}
       <div id="floors">
         {FLOORS.map((floor) => (
-          <div key={floor.n} className="floor">
+          <div key={floor.n} id={`floor-${floor.n}`} className="floor">
             <div className="fl">
               <b>{floor.n}</b>
               <i>{floor.l}</i>

@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import LockIntro from '../components/LockIntro';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
+import ProofStrip from '../components/ProofStrip';
+import SkillsGlance from '../components/SkillsGlance';
 import Building from '../components/Building';
+import AboutMeBlock from '../components/AboutMeBlock';
+import JourneyTimeline from '../components/JourneyTimeline';
 import LatestNotesStrip from '../components/LatestNotesStrip';
 import FloatingPreview from '../components/FloatingPreview';
+import FloorElevator from '../components/FloorElevator';
 
 export default function HomePage() {
   const [hoveredWindow, setHoveredWindow] = useState(null);
@@ -33,23 +38,38 @@ export default function HomePage() {
       {/* 1. Interactive Lock Intro (shown once per session) */}
       <LockIntro />
 
+      {/* 2. Desktop Vertical Floor Elevator */}
+      <FloorElevator />
+
       <div className="wrap">
-        {/* 2. Header */}
+        {/* 3. Header */}
         <Header />
 
-        {/* 3. Hero */}
+        {/* 4. Hero: Two big lines + 1 plain line + 3 small chips */}
         <Hero />
 
-        {/* 4. The Building (5 Floors + Ground Contact) */}
+        {/* 5. Certifications and Achievements Strip */}
+        <ProofStrip />
+
+        {/* 6. Skills at a Glance (Grouped chips) */}
+        <SkillsGlance />
+
+        {/* 7. The Building (5 Floors + Ground Contact) */}
         <Building
           onHoverWindow={handleHoverWindow}
           onLeaveWindow={handleLeaveWindow}
         />
 
-        {/* 5. Latest Field Notes Strip */}
+        {/* 8. About Me & Education Block */}
+        <AboutMeBlock />
+
+        {/* 9. Journey Timeline (Chapters by topic and real dates) */}
+        <JourneyTimeline />
+
+        {/* 10. Latest Field Notes Strip */}
         <LatestNotesStrip />
 
-        {/* 5. Footer */}
+        {/* 11. Footer */}
         <footer
           className="home-footer"
           style={{
@@ -105,7 +125,7 @@ export default function HomePage() {
         </footer>
       </div>
 
-      {/* 5. Floating Cursor Preview Box */}
+      {/* Floating Cursor Preview Box */}
       <FloatingPreview target={hoveredWindow} position={cursorPos} />
     </div>
   );
