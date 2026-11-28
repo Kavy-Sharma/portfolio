@@ -2,6 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import StoryDiagram from '../components/StoryDiagram';
+import AegisHardwarePhoto from '../components/AegisHardwarePhoto';
+import PhishSimShowcase from '../components/PhishSimShowcase';
+import SentinelFlowShowcase from '../components/SentinelFlowShowcase';
+import SafeLineRequestTrace from '../components/SafeLineRequestTrace';
+import TechDefenceSampleReport from '../components/TechDefenceSampleReport';
 import { PROJECT_STORIES } from '../data/projectStories';
 import projectsData from '../../data/projects.json';
 import statsData from '../../data/stats.json';
@@ -216,18 +221,22 @@ export default function ProjectStoryPage() {
                   </div>
 
                   <div className="work-honest-card">
-                    <h3 className="work-honest-title">Overview</h3>
+                    <h3 className="work-honest-title">What I worked on</h3>
                     <p className="work-honest-text">{story.honestLine}</p>
                   </div>
 
-                  <div className="work-samples-box">
-                    <h3 className="work-samples-title">Work samples</h3>
-                    <p className="work-samples-empty">
-                      {story.workSamples && story.workSamples.length > 0
-                        ? story.workSamples.join(', ')
-                        : 'Work samples will appear here once redacted reports are published.'}
-                    </p>
-                  </div>
+                  {story.id === 'td' ? (
+                    <TechDefenceSampleReport />
+                  ) : (
+                    <div className="work-samples-box">
+                      <h3 className="work-samples-title">Work samples</h3>
+                      <p className="work-samples-empty">
+                        {story.workSamples && story.workSamples.length > 0
+                          ? story.workSamples.join(', ')
+                          : 'Work samples will appear here once redacted reports are published.'}
+                      </p>
+                    </div>
+                  )}
                 </section>
               )}
 
@@ -331,7 +340,13 @@ export default function ProjectStoryPage() {
                 </>
               )}
 
-              {/* Limitations box (honest boundaries from README) */}
+                  {/* Interactive Playable Components */}
+                  {story.id === 'aegis' && <AegisHardwarePhoto />}
+                  {story.id === 'phish' && <PhishSimShowcase />}
+                  {story.id === 'sent' && <SentinelFlowShowcase />}
+                  {story.id === 'safe' && <SafeLineRequestTrace />}
+
+                  {/* Limitations box (honest boundaries from README) */}
               {story.limits && story.limits.length > 0 && (
                 <section className="limits-box" aria-label="Honest boundaries and limitations">
                   <div className="limits-header">

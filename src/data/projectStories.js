@@ -96,9 +96,10 @@ export const PROJECT_STORIES = {
     title: 'PhishSim AI',
     oneLine: 'Phishing awareness trainer. Runs live for anyone.',
     status: 'Live demo',
-    floorLabel: 'Floor 4 \u00b7 BUILD',
+    floorLabel: 'Floor 4 · BUILD',
     url: 'https://phishsim-ai.onrender.com',
     diagramType: 'phishsim',
+    sandboxNote: 'Sandbox mode, sample data, no real email is sent',
     beats: [
       {
         title: 'The problem',
@@ -106,19 +107,19 @@ export const PROJECT_STORIES = {
       },
       {
         title: 'The idea',
-        text: 'Build an agentic training platform that audits an organization\'s public attack surface, generates realistic role-specific simulation emails, and provides instant educational feedback.'
+        text: 'Build an interactive awareness platform guided by mascot "Lure" who stays with the user on every page. Give defenders an Attack Lab to inspect and edit realistic email lures, security utility tools, and an immediate learning experience right when someone clicks a simulated phish.'
       },
       {
         title: 'What I built',
-        text: 'Full-stack Flask and MySQL application with OpenRouter LLMs. Built PhishRecon (passive SPF, DMARC, look-alike domain checks), campaign delivery engine, and an executive risk briefing dashboard.'
+        text: 'Full-stack Python, Flask, MySQL, and OpenRouter LLM platform. Key capabilities include: mascot "Lure" companion across all views; Attack Lab to draft and preview emails; modular tools (PhishRecon for SPF/DMARC/look-alikes, Threat Analyser, Header Analyser, URL Decoder, Password Breach Check); campaign dashboard with team readiness score and weekly risk briefing; automated AI reports with prevention advice; multi-mode email dispatch with scheduling for later; and a dedicated "You clicked a simulated phish" learning page that immediately breaks down the red flags and teaches prevention.'
       },
       {
         title: 'What I learned',
-        text: 'Proactive reporting is the most important metric: highlighting employees who immediately report suspicious lures builds a stronger defense culture than simply penalizing clickers.'
+        text: 'Immediate, constructive coaching at the moment of click is far more effective than punitive metrics. Showing employees exactly what headers or look-alike domains looked suspicious builds lasting security habits.'
       },
       {
         title: 'What is next',
-        text: 'Add automated micro-learning modules triggered immediately when an employee clicks a simulated lure.'
+        text: 'Add adaptive difficulty levels and automated refresher modules triggered when an employee repeatedly clicks simulated lures.'
       }
     ],
     breakFix: {
@@ -128,8 +129,8 @@ export const PROJECT_STORIES = {
       blueText: 'Simulated safe sandbox delivery, captured telemetry (opens, clicks, reports), and provided constructive coaching ledgers and DMARC enforcement guides.'
     },
     limits: [
-      'Sandbox mode: Public demo runs in safe sandbox mode; no real emails are dispatched.',
-      'Passive recon only: PhishRecon uses non-intrusive DNS and WHOIS lookups; it is not a vulnerability scanner.',
+      'Sandbox mode: Public demo runs in safe sandbox mode with sample data; no real emails are sent.',
+      'Passive recon only: PhishRecon uses non-intrusive DNS and WHOIS lookups; it is not an intrusive scanner.',
       'Honest metrics: No claims about user counts, enterprise customers, or revenue.'
     ]
   },
@@ -139,29 +140,53 @@ export const PROJECT_STORIES = {
     title: 'SentinelFlow',
     oneLine: 'Early idea, still growing.',
     status: 'In progress',
-    floorLabel: 'Floor 4 \u00b7 BUILD',
+    floorLabel: 'Floor 4 · BUILD',
     url: 'https://github.com/Kavy-Sharma/SentinelFlow',
     diagramType: 'sentinelflow',
+    scenariosDetected: [
+      'Benign baseline',
+      'Port scan',
+      'Slow scan',
+      'SYN flood',
+      'Spoofed SYN flood',
+      'UDP flood',
+      'ARP spoof',
+      'SSH brute force',
+      'Distributed slow scan',
+      'Flash crowd'
+    ],
+    scenarioResults: {
+      attacksCaught: '8 of 8 attacks caught (100% scenario recall)',
+      falseAlarms: '2 false alarms (benign capture and flash crowd)',
+      missed: '0 missed attacks',
+      precision: '80%',
+      recall: '100%'
+    },
+    weaknessNote: {
+      windowRecall: '0.43%',
+      windowPrecision: '28.95%',
+      detail: 'Window-level (5-second time slices) recall is currently 0.43% with 28.95% precision. While the engine catches entire attack sessions reliably at the scenario level, individual 5-second windows during low-volume or quiet attack phases often mimic normal traffic. This is a documented limitation currently being improved with rolling temporal aggregation and adaptive thresholds.'
+    },
     beats: [
       {
         title: 'The problem',
-        text: 'Pure signature-based intrusion detection misses novel anomalies, while purely statistical ML models generate confusing black-box alerts with high false positive rates.'
+        text: 'Pure signature-based intrusion detection systems miss subtle anomalies, while purely statistical ML models generate confusing black-box alerts with high false positive rates.'
       },
       {
         title: 'The idea',
-        text: 'Pair deterministic rule-based heuristics with an unsupervised Isolation Forest trained strictly on benign baseline traffic, delivering structured MITRE ATT&CK explainability.'
+        text: 'A hybrid command-line evaluation pipeline (sentinelflow.cli evaluate, hybrid mode) that combines deterministic heuristic signatures with an unsupervised Isolation Forest trained strictly on benign baseline network traffic.'
       },
       {
         title: 'What I built',
-        text: 'Python 3.11 NIDS engine with offline PCAP parsing, bidirectional flow feature extraction, heuristic signatures (SYN flood, port scan, ARP spoofing), Isolation Forest model, and a Streamlit dashboard.'
+        text: 'Python 3.11 NIDS engine with offline PCAP parsing, bidirectional flow feature extraction, heuristic signatures, Isolation Forest model, and a terminal evaluation summary.'
       },
       {
         title: 'What I learned',
-        text: 'Training ML anomaly detectors strictly on benign baseline traffic avoids label noise and makes z-score anomaly deviation explainable to security analysts.'
+        text: 'Scenario-level detection is strong (8 of 8 attacks caught, 0 missed), but window-level granularity (5-second windows) requires temporal window memory to catch sparse or distributed packets.'
       },
       {
         title: 'What is next',
-        text: 'Add live packet capture via AF_PACKET / eBPF without root privileges.'
+        text: 'Add rolling temporal window aggregation to raise window-level recall from 0.43%, and integrate live capture via AF_PACKET / eBPF.'
       }
     ],
     breakFix: {
@@ -171,9 +196,9 @@ export const PROJECT_STORIES = {
       blueText: 'Correlated heuristic signature hits with statistical z-score flow anomalies, escalating alert priority with MITRE ATT&CK technique tags.'
     },
     limits: [
-      'Early stage: Core engine and CLI workflows are functional; live streaming engine is still growing.',
-      'Offline analysis: Optimized for PCAP analysis rather than real-time Gigabit wire speeds.',
-      'Baseline dependency: Isolation Forest requires clean benign network traffic for baseline calibration.'
+      'Early stage: Command-line evaluation pipeline is functional; real-time streaming engine is still growing.',
+      'Offline analysis: Evaluates PCAP capture files from CLI rather than live Gigabit wire speeds.',
+      'Documented weakness: 5-second window-level recall is 0.43% (being actively improved).'
     ]
   },
 
@@ -253,7 +278,7 @@ export const PROJECT_STORIES = {
     dates: 'Jun\u2013Jul 2026',
     location: 'Ahmedabad, Gujarat',
     tools: ['Nessus', 'Nmap', 'Burp Suite', 'Kali Linux'],
-    honestLine: 'Worked on network VAPT with Nessus and Nmap, firewall configuration reviews (FortiGate and MikroTik, against CIS-style checklists), network architecture reviews, CIS configuration reviews and web application testing. Wrote technical reports and handled client communication. Clients in finance, startups and other sectors. Details are confidential.',
+    honestLine: 'VAPT intern, TechDefence (Jun-Jul 2026). Worked on network VAPT with Nessus and Nmap, firewall configuration reviews (FortiGate and MikroTik, against CIS-style checklists), network architecture reviews, CIS configuration reviews and web application testing. Wrote the technical reports and handled client communication. Clients in finance, startups and other sectors. Details are confidential.',
     workSamples: [],
     limits: [
       'Confidentiality: Client names, network targets, and vulnerability reports are strictly confidential.',
