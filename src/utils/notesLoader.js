@@ -6,13 +6,13 @@ const rawNotesModules = import.meta.glob('/content/notes/*.md', {
 });
 
 export const CATEGORY_COLORS = {
-  Access: '#E5533F',
-  Injection: '#E58A2F',
-  Files: '#2F9E6F',
-  Auth: '#2F7FD0',
-  Logic: '#8B5CD6',
-  Network: '#1F9FB0',
-  Machines: '#C2548A'
+  Access: '#D93829',
+  Injection: '#B45309',
+  Files: '#1E7E52',
+  Auth: '#1D63B8',
+  Logic: '#743CC7',
+  Network: '#0E7E8D',
+  Machines: '#A83271'
 };
 
 export const CATEGORY_ORDER = [
