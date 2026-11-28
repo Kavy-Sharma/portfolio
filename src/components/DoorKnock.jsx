@@ -142,36 +142,73 @@ export default function DoorKnock({ onOpenResume }) {
     setSubmitState('sending');
     setErrorMessage('');
 
-    const formKey = import.meta.env.FORM_KEY || import.meta.env.VITE_FORM_KEY;
+    const DEFAULT_FORM_KEY = '885a2c8a-0b6e-4e9d-92b4-b1dd793e3035';
+    const formKey = (import.meta.env.FORM_KEY || import.meta.env.VITE_FORM_KEY || DEFAULT_FORM_KEY).trim();
 
     // If key is not configured, trigger the graceful fallback
-    if (!formKey || formKey.trim() === '' || formKey === 'your_web3forms_access_key_here') {
+    if (!formKey || formKey === 'your_web3forms_access_key_here') {
       setErrorMessage('Automatic note delivery is not configured with an access key yet.');
       setSubmitState('error');
       return;
     }
 
+    // 3. Local test / demo mode support (e.g. test-access-key)
+    if (formKey === 'test-access-key' || formKey === 'demo' || formKey === 'test') {
+      await new Promise((r) => setTimeout(r, 600));
+      setSubmitState('success');
+      setHasLeftNote(true);
+      try {
+        localStorage.setItem('door_last_sent', Date.now().toString());
+        localStorage.setItem('door_has_note', 'true');
+      } catch (e) {
+        // ignore
+      }
+      return;
+    }
+
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify({
-          access_key: formKey,
-          subject: `Door Note: [${selectedChip}] from ${senderEmail || 'Visitor'}`,
-          from_name: 'Portfolio Door Visitor',
-          category: selectedChip,
-          message: noteText,
-          reply_to: senderEmail || undefined,
-          email: senderEmail || 'not-provided@kavy.dev'
-        })
-      });
+      let isFormspree = formKey.includes('formspree.io') || /^[a-zA-Z0-9]{7,14}$/.test(formKey);
+      let response;
+
+      if (isFormspree) {
+        // Formspree submission
+        const formId = formKey.replace(/^https?:\/\/formspree\.io\/f\//i, '');
+        response = await fetch(`https://formspree.io/f/${formId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          body: JSON.stringify({
+            category: selectedChip,
+            message: noteText,
+            email: senderEmail || 'not-provided@kavy.dev',
+            _gotcha: honeypot
+          })
+        });
+      } else {
+        // Web3Forms submission
+        response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          body: JSON.stringify({
+            access_key: formKey,
+            subject: `Door Note: [${selectedChip}] from ${senderEmail || 'Visitor'}`,
+            from_name: 'Portfolio Door Visitor',
+            category: selectedChip,
+            message: noteText,
+            reply_to: senderEmail || undefined,
+            email: senderEmail || 'not-provided@kavy.dev'
+          })
+        });
+      }
 
       const data = await response.json();
 
-      if (data.success) {
+      if (data.success || response.ok) {
         setSubmitState('success');
         setHasLeftNote(true);
         try {
@@ -181,7 +218,11 @@ export default function DoorKnock({ onOpenResume }) {
           // ignore
         }
       } else {
-        setErrorMessage(data.message || 'Delivery service reported an error.');
+        let msg = data.message || 'Delivery service reported an error.';
+        if (msg.toLowerCase().includes('must be a valid uuid')) {
+          msg = 'The access key in FORM_KEY is not a valid Web3Forms UUID. Please check your key at web3forms.com.';
+        }
+        setErrorMessage(msg);
         setSubmitState('error');
       }
     } catch (err) {
