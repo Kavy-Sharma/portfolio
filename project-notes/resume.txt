@@ -1,0 +1,56 @@
+KAVY SHARMA
+Cybersecurity | VAPT | Web Application & AI Security
+Jodhpur, Rajasthan | +91 9828505115 | kavysharma196@gmail.com
+linkedin.com/in/kavysharma | github.com/Kavy-Sharma
+
+SUMMARY
+Final-year Electronics & Computer Engineering student. Tested web applications and networks for 20+ client environments as a VAPT intern, and built tools for phishing simulation, LLM-agent security and intrusion detection. Looking for an internship in VAPT or AI security.
+
+EDUCATION
+MBM University (2023 – 2027)
+Bachelor of Engineering in Electronics & Computer Engineering
+Jodhpur, Rajasthan
+
+EXPERIENCE
+TechDefence (Jun 2026 – Jul 2026)
+VAPT Intern | Ahmedabad, Gujarat
+• Performed web application and network VAPT for 20+ client environments across finance, startups and other sectors using Burp Suite, Nmap, Nessus and Kali Linux.
+• Identified SQL injection, XSS, access-control weaknesses and firewall misconfigurations through reconnaissance, enumeration and validation.
+• Reported findings with evidence, risk ratings and remediation guidance, and presented them to clients.
+
+Defence Research and Development Organisation (DRDO) (Jun 2025 – Jul 2025)
+Project Intern | Jodhpur, Rajasthan
+• Built MATLAB UAV flight-path simulations with monitoring logic that flags routes entering restricted zones.
+
+PROJECTS
+PhishSim AI | Live Demo (https://phishsim-ai.onrender.com)
+Python, Flask, MySQL, LLM APIs, OSINT
+• Built and deployed a phishing-simulation platform with CSV employee import, role-aware AI email generation, configurable SMTP and live open, click and report tracking.
+• Developed PhishRecon for lookalike-domain, SPF/DMARC, RDAP, TLS and subdomain checks, plus email-header, phishing-URL and password-breach analysis.
+• Added AI-assisted risk dashboards and PDF reports; tested SSRF, CSRF and access-control protections.
+
+AegisAgent | GitHub (https://github.com/Kavy-Sharma/AegisAgent)
+Python, Ollama, MQTT, ESP32, SHA-256
+• Built a nine-stage security gateway between a local LLM agent and its tools/devices: prompt-injection detection, intent checks, RBAC, rate limiting, human approval and output scanning.
+• Added MQTT/ESP32 bridging and hash-chained audit logs; test suite has 399 automated tests.
+
+SentinelFlow | GitHub (https://github.com/Kavy-Sharma/SentinelFlow)
+Python, Isolation Forest, Streamlit, PCAP
+• Built an offline network intrusion detection system combining rules (port scans, SYN/UDP floods, SSH brute force, ARP spoofing) with Isolation Forest anomaly detection.
+• Added MITRE ATT&CK mapping, a triage dashboard and report exports; includes 40 automated tests.
+
+SafeLine WAF + DVWA Home Lab | GitHub (https://github.com/Kavy-Sharma/safeline-dvwa-waf-lab)
+VirtualBox, Kali, Ubuntu Server, Docker
+• Deployed DVWA behind SafeLine WAF/reverse proxy with local DNS and HTTPS; verified routing and responses.
+
+TECHNICAL SKILLS
+• Security Testing: Web & Network VAPT, OWASP Top 10, SQLi, XSS, CSRF, SSRF, Access Control/IDOR, SSTI, Command Injection, Path Traversal, File Upload
+• AI & Defensive Security: Prompt-Injection Defence, RBAC, Intrusion Detection, WAF Deployment, MITRE ATT&CK, Phishing & Email Analysis (SPF/DMARC), OSINT
+• Tools: Burp Suite, Nmap, Nessus, Metasploit, Wireshark, SafeLine, Docker, VirtualBox, Git/GitHub
+• Programming & Platforms: Python, Flask, MySQL, Streamlit, MATLAB, Linux, Ollama, MQTT, ESP32
+
+ACHIEVEMENTS & CERTIFICATION
+• Sea of Secrets CTF (HackItUp, Oct 2026): Solo rank under 150 of 2,500 participants.
+• TryHackMe: Top 8% worldwide.
+• PortSwigger Web Security Academy: 105+ labs solved (read from data/stats.json).
+• Introduction to AI Security – AI Security University: Sep 2026.

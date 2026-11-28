@@ -585,7 +585,7 @@ export default function StoryOverlay({ openItem, onClose, originCoords }) {
     if (renderedItem.id === 'ps') {
       return (
         <div>
-          <span className="tag">Auto-ish Stat &middot; PortSwigger Web Security Academy</span>
+          <span className="tag">Proof &middot; PortSwigger Web Security Academy</span>
           <h2 style={{ fontSize: 'clamp(34px, 6vw, 60px)', margin: '10px 0 16px' }}>PortSwigger Academy</h2>
           <p className="lead">{totalLabs} labs cleared across Apprentice, Practitioner, and Expert tiers.</p>
 
@@ -599,22 +599,22 @@ export default function StoryOverlay({ openItem, onClose, originCoords }) {
           </div>
 
           <div className="beat">
-            <b>Vulnerability Topics Mastered</b>
+            <b>Vulnerability Topics Solved</b>
             <div style={{ color: 'var(--mu)' }}>
-              SQL Injection (UNION, error-based, blind time-delays), Cross-Site Scripting (Reflected, Stored, DOM), CSRF token bypasses, Path Traversal, Insecure Direct Object References (IDOR), and Business Logic flaws.
+              SQL Injection, blind SQLi with time delays, Cross-Site Scripting (XSS), CSRF, SSRF, IDOR, Path Traversal, File Upload, Business Logic flaws, and Race Conditions.
             </div>
           </div>
 
-          <div className="rb">
-            <div className="r">
-              <b>Attacker Lens</b>
-              Tamper with raw HTTP requests via Burp Suite Repeater, probe database response timing, and chain subtle logic flaws.
-            </div>
-            <div className="bl">
-              <b>Defender Lens</b>
-              Enforce parameterized queries, contextual output encoding, strict session revocation, and defense-in-depth WAF rules.
-            </div>
-          </div>
+          <p style={{ marginTop: '20px' }}>
+            <a
+              style={{ color: 'var(--ac)', fontWeight: 600, textDecoration: 'none' }}
+              href="https://portswigger.net"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open PortSwigger Academy &rarr;
+            </a>
+          </p>
         </div>
       );
     }
@@ -625,30 +625,19 @@ export default function StoryOverlay({ openItem, onClose, originCoords }) {
         <div>
           <span className="tag">Profile &middot; TryHackMe</span>
           <h2 style={{ fontSize: 'clamp(34px, 6vw, 60px)', margin: '10px 0 16px' }}>TryHackMe</h2>
-          <p className="lead">Ranked in the top {stats.tryhackme?.top_percent || 7}% worldwide.</p>
+          <p className="lead">Ranked in the top {stats.tryhackme?.top_percent || 8}% worldwide.</p>
 
           <div className="beat">
             <b>Practical Pentesting</b>
             <div style={{ color: 'var(--mu)' }}>
-              Continuous hands-on offensive and defensive cybersecurity training. Focus on realistic Linux target machines, Active Directory fundamentals, and web security.
+              Silver League &middot; {stats.tryhackme?.streak_days || 68}-day streak &middot; Capability score {stats.tryhackme?.score || 45}.
             </div>
           </div>
 
           <div className="beat">
-            <b>Core Competencies</b>
+            <b>Target Machine Write-ups</b>
             <div style={{ color: 'var(--mu)' }}>
-              Network reconnaissance (Nmap, Wireshark), Linux privilege escalation (SUID, cronjobs, sudo), web vulnerability enumeration (Burp Suite, Gobuster), and hash cracking (John the Ripper, Hashcat).
-            </div>
-          </div>
-
-          <div className="rb">
-            <div className="r">
-              <b>Attacker Lens</b>
-              Systematically map network surfaces, exploit misconfigurations, and establish persistent footholds.
-            </div>
-            <div className="bl">
-              <b>Defender Lens</b>
-              Implement baseline host hardening, isolate critical network segments, and monitor authentication telemetry.
+              Basic Pentesting, RootMe, Kenobi, Meow, Fawn, and Dancing. Port enumeration, service vulnerability exploitation, and Linux privilege escalation.
             </div>
           </div>
 
@@ -672,30 +661,19 @@ export default function StoryOverlay({ openItem, onClose, originCoords }) {
         <div>
           <span className="tag">Achievements &middot; Competitions &amp; Certifications</span>
           <h2 style={{ fontSize: 'clamp(34px, 6vw, 60px)', margin: '10px 0 16px' }}>CTF &amp; Certifications</h2>
-          <p className="lead">Sea of Secrets CTF solo rank under 150 &middot; AI Security Certification.</p>
+          <p className="lead">Sea of Secrets CTF solo rank under 150 of 2,500 &middot; Introduction to AI Security.</p>
 
           <div className="beat">
-            <b>Sea of Secrets CTF</b>
+            <b>Sea of Secrets CTF (HackItUp, Oct 2026)</b>
             <div style={{ color: 'var(--mu)' }}>
-              Competed as a solo participant against international teams, achieving a final rank under 150. Solved challenges across web security, reverse engineering, digital forensics, and cryptographic ciphers.
+              Competed solo, achieving a final ranking under 150 out of 2,500 participants across web security, cryptography, and forensics.
             </div>
           </div>
 
           <div className="beat">
-            <b>Introduction to AI Security (AI Security University)</b>
+            <b>Introduction to AI Security (AI Security University, Sep 2026)</b>
             <div style={{ color: 'var(--mu)' }}>
-              Certified in AI security fundamentals, covering OWASP Top 10 for LLMs: prompt injection vulnerabilities, jailbreaks, data leakage, insecure output handling, and model alignment boundaries.
-            </div>
-          </div>
-
-          <div className="rb">
-            <div className="r">
-              <b>Attacker Lens</b>
-              Devise novel adversarial prompts and injection vectors to bypass model behavioral constraints.
-            </div>
-            <div className="bl">
-              <b>Defender Lens</b>
-              Architect deterministic out-of-band guardrails, role checks, and hardware isolation layers.
+              Certified in AI security fundamentals: prompt injection defenses, LLM agent trust boundaries, parameter allowlists, and guardrail architecture.
             </div>
           </div>
         </div>
@@ -708,37 +686,26 @@ export default function StoryOverlay({ openItem, onClose, originCoords }) {
         <div>
           <span className="tag">Internship &middot; TechDefence</span>
           <h2 style={{ fontSize: 'clamp(34px, 6vw, 60px)', margin: '10px 0 16px' }}>TechDefence</h2>
-          <p className="lead">VAPT Intern &middot; June&ndash;July 2026.</p>
+          <p className="lead">VAPT Intern &middot; Jun&ndash;Jul 2026 &middot; Ahmedabad, Gujarat</p>
 
           <div className="beat">
-            <b>Client VAPT Engagements</b>
+            <b>Role &amp; Tooling</b>
             <div style={{ color: 'var(--mu)' }}>
-              Conducted vulnerability assessments and penetration testing for {stats.client_tests_plus || 20}+ clients across web applications, REST APIs, and corporate network perimeters.
+              <strong>Tools:</strong> Nessus, Nmap, Burp Suite, Kali Linux
             </div>
           </div>
 
           <div className="beat">
-            <b>Methodology &amp; Tooling</b>
+            <b>Overview</b>
             <div style={{ color: 'var(--mu)' }}>
-              Followed OWASP Top 10 and PTES testing standards using Burp Suite Professional, Nmap, Nessus, SQLmap, and Kali Linux. Analyzed authorization logic, authenticated sessions, and input sanitation.
+              Worked on network VAPT with Nessus and Nmap, firewall configuration reviews (FortiGate and MikroTik, against CIS-style checklists), network architecture reviews, CIS configuration reviews and web application testing. Wrote technical reports and handled client communication. Clients in finance, startups and other sectors. Details are confidential.
             </div>
           </div>
 
           <div className="beat">
-            <b>Audit Reporting &amp; Remediation</b>
-            <div style={{ color: 'var(--mu)' }}>
-              Authored clear vulnerability assessment reports with CVSS severity scoring, reproducible proof-of-concept steps, and actionable technical remediation advice for engineering teams.
-            </div>
-          </div>
-
-          <div className="rb">
-            <div className="r">
-              <b>Attacker Lens</b>
-              Simulate external threat actors to uncover exploitable flaws in production applications.
-            </div>
-            <div className="bl">
-              <b>Defender Lens</b>
-              Provide developers with exact remediation guidelines to patch vulnerabilities before deployment.
+            <b>Work samples</b>
+            <div style={{ color: 'var(--mu)', fontStyle: 'italic' }}>
+              Work samples will appear here once redacted reports are published.
             </div>
           </div>
         </div>
@@ -751,13 +718,31 @@ export default function StoryOverlay({ openItem, onClose, originCoords }) {
         <div>
           <span className="tag">Internship &middot; DRDO</span>
           <h2 style={{ fontSize: 'clamp(34px, 6vw, 60px)', margin: '10px 0 16px' }}>DRDO</h2>
-          <p className="lead">Project Intern &middot; June&ndash;July 2025.</p>
+          <p className="lead">Project Intern &middot; Jun&ndash;Jul 2025 &middot; Jodhpur, Rajasthan</p>
 
           <div className="beat">
-            <b>UAV Flight Simulation</b>
+            <b>Role &amp; Tooling</b>
             <div style={{ color: 'var(--mu)' }}>
-              Defence Research and Development Organisation. Developed unmanned aerial vehicle (UAV) flight trajectory simulation models in MATLAB.
+              <strong>Tools:</strong> MATLAB
             </div>
+          </div>
+
+          <div className="beat">
+            <b>Overview</b>
+            <div style={{ color: 'var(--mu)' }}>
+              Built MATLAB UAV flight-path simulations with monitoring logic that flags routes entering restricted zones.
+            </div>
+          </div>
+
+          <div className="beat">
+            <b>Work samples</b>
+            <div style={{ color: 'var(--mu)', fontStyle: 'italic' }}>
+              Work samples will appear here once approved.
+            </div>
+          </div>
+        </div>
+      );
+    }
           </div>
 
           <div className="beat">
@@ -778,9 +763,9 @@ export default function StoryOverlay({ openItem, onClose, originCoords }) {
         <p className="lead">{renderedItem.d}</p>
 
         <div className="beat">
-          <b>The story goes here</b>
+          <b>Project Overview</b>
           <div style={{ color: 'var(--mu)' }}>
-            Each window opens its own page: problem, idea, what I built, what I learned. Written from my real notes and READMEs with no invented claims.
+            Each window highlights key technical problem solving, architecture decisions, and verified milestones.
           </div>
         </div>
 

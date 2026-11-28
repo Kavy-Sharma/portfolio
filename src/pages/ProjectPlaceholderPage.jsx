@@ -35,7 +35,7 @@ export default function ProjectPlaceholderPage() {
         <div className="beat" style={{ marginTop: '32px' }}>
           <b>Story coming soon</b>
           <div style={{ color: 'var(--mu)', marginTop: '6px' }}>
-            This page will tell the complete story: problem, idea, what I built, limits, and live demo. Built from verified facts only.
+            This page will tell the complete story: problem, idea, what I built, limits, and live demo.
           </div>
         </div>
 

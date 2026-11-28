@@ -137,6 +137,7 @@ async function makeResumePdf() {
   } finally {
     await browser.close();
     if (localServer) localServer.close();
+    process.exit(0);
   }
 }
 

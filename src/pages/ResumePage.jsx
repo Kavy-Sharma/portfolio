@@ -154,7 +154,7 @@ export default function ResumePage() {
               <strong>Sea of Secrets CTF (HackItUp, Oct 2026):</strong> Solo rank under 150 of 2,500 participants.
             </li>
             <li>
-              <strong>TryHackMe:</strong> Top 7% worldwide.
+              <strong>TryHackMe:</strong> Top {statsData?.tryhackme?.top_percent || 8}% worldwide.
             </li>
             <li>
               <strong>PortSwigger Web Security Academy:</strong> {labsCount}+ labs solved.

@@ -5,6 +5,7 @@ import statsData from '../../data/stats.json';
 import githubData from '../../data/github.json';
 import { navigateWithReveal } from '../utils/transitionNavigate';
 import { formatAsOfDate } from '../utils/timeFormat';
+import DoorKnock from './DoorKnock';
 
 // Hook for recent activity
 export function useRecentActivity(projects) {
@@ -59,12 +60,12 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
 
   const stats = statsData || {
     portswiggerLabs: 105,
-    thmRank: 'top 7%',
+    thmRank: 'top 8%',
     client_tests_plus: 20
   };
 
   const totalLabs = stats.portswiggerLabs || 105;
-  const thmRank = stats.thmRank || 'top 7%';
+  const thmRank = stats.thmRank || 'top 8%';
   const clientsCount = `${stats.client_tests_plus || 20}+`;
   const asOfText = formatAsOfDate(stats.asOf);
 
@@ -102,6 +103,7 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
   }));
 
   const handlePointerMove = (e) => {
+    if (e.pointerType === 'touch') return;
     const el = e.currentTarget;
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width;
@@ -113,6 +115,7 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
   };
 
   const handlePointerLeave = (e) => {
+    if (e.pointerType === 'touch') return;
     const el = e.currentTarget;
     el.style.setProperty('--rx', '0deg');
     el.style.setProperty('--ry', '0deg');
@@ -206,7 +209,10 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
                     data-lit={isLit ? 'true' : 'false'}
                     onPointerMove={handlePointerMove}
                     onPointerLeave={handlePointerLeave}
-                    onPointerEnter={(e) => onHoverWindow && onHoverWindow(w, e)}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === 'touch') return;
+                      if (onHoverWindow) onHoverWindow(w, e);
+                    }}
                     onFocus={(e) => {
                       if (onHoverWindow) {
                         const r = e.currentTarget.getBoundingClientRect();
@@ -246,57 +252,7 @@ export default function Building({ onOpenWindow, onHoverWindow, onLeaveWindow, o
         </div>
 
         <div className="door">
-          <button
-            type="button"
-            className="dr"
-            id="dr"
-            title="Knock on door to copy email"
-            aria-label="Knock on door to copy email"
-            onClick={handleCopyEmail}
-          />
-
-          <div>
-            <p>
-              <b style={{ font: "700 20px 'Bricolage Grotesque', system-ui, sans-serif" }}>
-                Open to internships and jobs.
-              </b>
-              <br />
-              <span style={{ color: 'var(--mu)' }}>Say hi, the door is open.</span>
-            </p>
-
-            <p style={{ marginTop: '10px' }}>
-              <span className="mail" id="mail">
-                kavysharma196@gmail.com
-              </span>{' '}
-              <button type="button" className="cp" id="cp" onClick={handleCopyEmail}>
-                {copied ? 'Copied' : 'Copy'}
-              </button>
-            </p>
-
-            <p style={{ marginTop: '8px', fontSize: '14px' }}>
-              <a
-                style={{ color: 'var(--ac)' }}
-                href="/resume"
-                className="rl2"
-                onClick={handleResumeNav}
-              >
-                Resume
-              </a>{' '}
-              (<a style={{ color: 'var(--ac)' }} href="/resume.pdf" download="Kavy_Sharma_Resume.pdf" title="Download Resume PDF">PDF</a>){' '}
-              &middot;{' '}
-              <a style={{ color: 'var(--ac)' }} href="https://github.com/Kavy-Sharma" target="_blank" rel="noopener noreferrer">
-                GitHub
-              </a>{' '}
-              &middot;{' '}
-              <a style={{ color: 'var(--ac)' }} href="https://linkedin.com/in/kavysharma" target="_blank" rel="noopener noreferrer">
-                LinkedIn
-              </a>{' '}
-              &middot;{' '}
-              <a style={{ color: 'var(--ac)' }} href="https://tryhackme.com/p/kavysharma196" target="_blank" rel="noopener noreferrer">
-                TryHackMe
-              </a>
-            </p>
-          </div>
+          <DoorKnock onOpenResume={handleResumeNav} />
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-// Verified project story content derived strictly from project READMEs and project-notes/facts.md
+// Project story content
 
 export const PROJECT_STORIES = {
   aegis: {
@@ -9,6 +9,7 @@ export const PROJECT_STORIES = {
     floorLabel: 'Floor 4 \u00b7 BUILD',
     url: 'https://github.com/Kavy-Sharma/AegisAgent',
     diagramType: 'aegis',
+    benchmarkNote: 'Component benchmark (benchmark/run.py): Standalone rule detector evaluated against 60 novel adversarial prompt bypasses (Hindi/Hinglish translations, homoglyphs, base64/hex, role spoofing, multi-turn payloads) and 30 benign inputs. Detected 10 of 60 novel bypasses (16.7%) with 0/30 false positives. Bypasses that evade regex are stopped downstream by Gates 2–8 (Intent Lock, RBAC, Parameter Guard, Rate Limiter, and Human-in-the-Loop approval).',
     beats: [
       {
         title: 'The problem',
@@ -180,41 +181,20 @@ export const PROJECT_STORIES = {
     id: 'ps',
     title: 'PortSwigger Academy',
     oneLine: '__LABS__ labs solved so far. Keeps growing.',
-    status: 'Auto-ish stat',
+    status: 'Proof',
     floorLabel: 'Floor 2 \u00b7 PROVE',
     url: 'https://portswigger.net',
     diagramType: 'portswigger',
-    beats: [
-      {
-        title: 'The problem',
-        text: 'Theoretical web security knowledge is insufficient without practical, repeatable hands-on exploitation against real-world vulnerability patterns.'
-      },
-      {
-        title: 'The idea',
-        text: 'Systematically work through PortSwigger\'s rigorous Web Security Academy across all core vulnerability classes and difficulty tiers.'
-      },
-      {
-        title: 'What I built',
-        text: 'Solves across Apprentice, Practitioner, and Expert tiers using Burp Suite Professional tools (Repeater, Intruder, Match and Replace, Collaborator).'
-      },
-      {
-        title: 'What I learned',
-        text: 'Chaining subtle flaws—such as an IDOR combined with business logic race conditions—often leads to full account compromise.'
-      },
-      {
-        title: 'What is next',
-        text: 'Complete the remaining Expert-tier labs in OAuth2, WebSockets, and Advanced Server-Side Template Injection.'
-      }
+    isProof: true,
+    summary: 'PortSwigger Web Security Academy practical lab curriculum solved across Apprentice, Practitioner, and Expert tiers.',
+    proofDetails: [
+      { label: 'Tools', value: 'Burp Suite Professional (Repeater, Intruder, Match & Replace, Collaborator)' },
+      { label: 'Topics', value: 'SQL injection, blind SQLi, XSS, CSRF, SSRF, IDOR, path traversal, file upload, business logic, race conditions' },
+      { label: 'Verification', value: 'Solved within official PortSwigger Academy interactive training curriculum.' }
     ],
-    breakFix: {
-      redTitle: 'Offensive Web Exploitation (Attacker Lens)',
-      redText: 'Intercepted and modified raw HTTP traffic in Burp Suite, exploited blind SQL injection with time delays, bypassed CSRF protections, and extracted sensitive tokens.',
-      blueTitle: 'Secure Coding Principles (Defender Lens)',
-      blueText: 'Implemented parameterized queries, contextual output encoding, robust session invalidation, and strict access control checks on every server endpoint.'
-    },
     limits: [
-      'Numbers source: All lab counts are read dynamically from data/stats.json.',
-      'Academic scope: Completed in simulated PortSwigger lab environments, not live unauthorized systems.'
+      'Lab environment: Completed in simulated PortSwigger lab environments.',
+      'Data source: Lab counts read dynamically from data/stats.json.'
     ]
   },
 
@@ -226,37 +206,16 @@ export const PROJECT_STORIES = {
     floorLabel: 'Floor 2 \u00b7 PROVE',
     url: 'https://tryhackme.com/p/kavysharma196',
     diagramType: 'tryhackme',
-    beats: [
-      {
-        title: 'The problem',
-        text: 'Modern penetration testing requires navigating complete operating systems, Active Directory domains, and misconfigured services from initial foothold to root.'
-      },
-      {
-        title: 'The idea',
-        text: 'Practice offensive security against real Linux and Windows target machines across diverse CTF and enterprise network rooms.'
-      },
-      {
-        title: 'What I built',
-        text: 'Solved extensive machine challenges, elevating global profile ranking into the top 7% worldwide.'
-      },
-      {
-        title: 'What I learned',
-        text: 'Enumeration is 90% of the game. Thorough port and service scanning uncovers forgotten services that provide initial access.'
-      },
-      {
-        title: 'What is next',
-        text: 'Target advanced Active Directory rooms (Kerberoasting, AS-REP roasting, DCSync) and complete OSCP-style target networks.'
-      }
+    isProof: true,
+    summary: 'Hands-on offensive security practice across Linux and Windows training machines and CTF rooms.',
+    proofDetails: [
+      { label: 'Ranking', value: 'Top 8% worldwide \u00b7 Silver League \u00b7 68-day streak' },
+      { label: 'Write-ups', value: 'Basic Pentesting, RootMe, Kenobi, Meow, Fawn, Dancing' },
+      { label: 'Skills', value: 'Network reconnaissance, service enumeration, initial access, Linux privilege escalation' }
     ],
-    breakFix: {
-      redTitle: 'Privilege Escalation & Footholds (Attacker Lens)',
-      redText: 'Identified vulnerable services (ProFTPD 1.3.5), cracked password hashes, and abused SUID binaries via GTFOBins to escalate from user to root.',
-      blueTitle: 'Hardening & Least Privilege (Defender Lens)',
-      blueText: 'Decommissioned legacy protocols (Telnet/FTP), enforced ed25519 SSH keys, audited sudoers configurations, and applied principle of least privilege.'
-    },
     limits: [
-      'Numbers source: Ranking and badge counts read from data/stats.json.',
-      'Target scope: Educational training machines on TryHackMe network.'
+      'Platform: Completed on TryHackMe educational lab network.',
+      'Data source: Ranking and streak read dynamically from data/stats.json.'
     ]
   },
 
@@ -268,79 +227,37 @@ export const PROJECT_STORIES = {
     floorLabel: 'Floor 2 \u00b7 PROVE',
     url: '',
     diagramType: 'ctf',
-    beats: [
-      {
-        title: 'The problem',
-        text: 'Security threats are rapidly expanding from traditional web architectures into generative AI and Large Language Model deployments.'
-      },
-      {
-        title: 'The idea',
-        text: 'Validate both classical CTF exploitation skills under competition pressure and structured AI security governance principles.'
-      },
-      {
-        title: 'What I built',
-        text: 'Competed solo in the Sea of Secrets CTF (rank under 150) and earned the Introduction to AI Security certification (AI Security University).'
-      },
-      {
-        title: 'What I learned',
-        text: 'AI models cannot distinguish between developer system instructions and untrusted user data, making defense-in-depth architectural gateways mandatory.'
-      },
-      {
-        title: 'What is next',
-        text: 'Compete in collegiate team CTFs and conduct adversarial red-teaming against open-weight LLMs.'
-      }
+    isProof: true,
+    summary: 'Competed solo in Sea of Secrets CTF and certified in AI Security fundamentals.',
+    proofDetails: [
+      { label: 'Competition', value: 'Sea of Secrets CTF (HackItUp, Oct 2026) \u00b7 Solo rank under 150 of 2,500' },
+      { label: 'Certification', value: 'Introduction to AI Security (AI Security University, Sep 2026)' },
+      { label: 'Focus', value: 'Web security, cryptographic challenges, LLM prompt injection defenses, model guardrails' }
     ],
-    breakFix: {
-      redTitle: 'Adversarial Prompting (Attacker Lens)',
-      redText: 'Constructed jailbreak prompts, prompt injections, and data extraction queries against unguarded LLM agent endpoints.',
-      blueTitle: 'Model Alignment & Guardrails (Defender Lens)',
-      blueText: 'Enforced dual-layer guardrails, input normalization, parameter allowlists, and human-in-the-loop authorization.'
-    },
     limits: [
-      'Observable proof: Verified certificate and CTF scoreboard ranking from facts.md.',
-      'Solo rank: Sea of Secrets rank under 150 achieved as an individual competitor.'
+      'Solo participation: Sea of Secrets rank achieved as an individual competitor.',
+      'Verification: Certificate issued by AI Security University.'
     ]
   },
 
   td: {
     id: 'td',
     title: 'TechDefence',
-    oneLine: 'VAPT intern. Tested apps for 20+ clients.',
+    oneLine: 'VAPT intern. Network and web testing.',
     status: 'Internship',
     floorLabel: 'Floor 1 \u00b7 WORK',
     url: '',
     diagramType: 'techdefence',
-    beats: [
-      {
-        title: 'The problem',
-        text: 'Production client applications contain subtle business logic and access control vulnerabilities that automated scanners completely miss.'
-      },
-      {
-        title: 'The idea',
-        text: 'Perform manual Vulnerability Assessment and Penetration Testing (VAPT) following structured OWASP testing methodologies.'
-      },
-      {
-        title: 'What I built',
-        text: 'VAPT Intern at TechDefence (Jun\u2013Jul 2026). Tested web applications and APIs for 20+ clients using Burp Suite, Nessus, Nmap, and Kali Linux.'
-      },
-      {
-        title: 'What I learned',
-        text: 'Writing actionable remediation guidance for developers is just as important as discovering the vulnerability itself.'
-      },
-      {
-        title: 'What is next',
-        text: 'Advance towards professional certifications (e.g. eJPT, CEH, OSCP) and expand into cloud infrastructure security.'
-      }
-    ],
-    breakFix: {
-      redTitle: 'Client Assessment Scope (Attacker Lens)',
-      redText: 'Audited authentication flows, IDOR boundaries, session fixation risks, and input sanitization across client-staging web apps.',
-      blueTitle: 'Remediation Reporting (Defender Lens)',
-      blueText: 'Delivered executive vulnerability summaries with CVSS severity scoring, proof-of-concept reproductions, and specific code-level patch steps.'
-    },
+    isWork: true,
+    role: 'VAPT Intern',
+    dates: 'Jun\u2013Jul 2026',
+    location: 'Ahmedabad, Gujarat',
+    tools: ['Nessus', 'Nmap', 'Burp Suite', 'Kali Linux'],
+    honestLine: 'Worked on network VAPT with Nessus and Nmap, firewall configuration reviews (FortiGate and MikroTik, against CIS-style checklists), network architecture reviews, CIS configuration reviews and web application testing. Wrote technical reports and handled client communication. Clients in finance, startups and other sectors. Details are confidential.',
+    workSamples: [],
     limits: [
-      'NDA & Privacy: Client names, internal target URLs, and specific client findings are confidential and omitted per rules.md.',
-      'Dates: Internship conducted Jun\u2013Jul 2026.'
+      'Confidentiality: Client names, network targets, and vulnerability reports are strictly confidential.',
+      'Dates: Internship completed Jun\u2013Jul 2026.'
     ]
   },
 
@@ -352,33 +269,16 @@ export const PROJECT_STORIES = {
     floorLabel: 'Floor 1 \u00b7 WORK',
     url: '',
     diagramType: 'drdo',
-    beats: [
-      {
-        title: 'The problem',
-        text: 'Evaluating unmanned aerial vehicle (UAV) flight stability and sensor behavior requires high-fidelity mathematical simulations before physical flight tests.'
-      },
-      {
-        title: 'The idea',
-        text: 'Develop computational flight dynamics models in MATLAB to simulate flight trajectories and analyze sensor telemetry.'
-      },
-      {
-        title: 'What I built',
-        text: 'Project Intern at Defence Research and Development Organisation (Jun\u2013Jul 2025). Built simulation models and telemetry processing scripts.'
-      },
-      {
-        title: 'What I learned',
-        text: 'Engineering rigor, deterministic state modeling, and how sensor errors propagate through control systems.'
-      },
-      {
-        title: 'What is next',
-        text: 'Apply control-system security principles to embedded IoT and robotics hardware.'
-      }
-    ],
-    breakFix: null, // No threat/defence info for defense simulation
+    isWork: true,
+    role: 'Project Intern',
+    dates: 'Jun\u2013Jul 2025',
+    location: 'Jodhpur, Rajasthan',
+    tools: ['MATLAB'],
+    honestLine: 'Built MATLAB UAV flight-path simulations with monitoring logic that flags routes entering restricted zones.',
+    workSamples: [],
     limits: [
-      'Classification: Technical formulas, vehicle specifics, and defense data are strictly confidential.',
-      'Scope: Numerical simulation and telemetry analysis in MATLAB; no physical flight hardware media.',
-      'Dates: Project internship conducted Jun\u2013Jul 2025.'
+      'Confidentiality: Defense project specifics and flight algorithms are confidential.',
+      'Dates: Project internship completed Jun\u2013Jul 2025.'
     ]
   },
 

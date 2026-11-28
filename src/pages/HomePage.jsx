@@ -49,9 +49,60 @@ export default function HomePage() {
         {/* 5. Latest Field Notes Strip */}
         <LatestNotesStrip />
 
-        <p className="tag srcap" style={{ margin: '80px 0 30px' }}>
-          Portfolio &middot; verified facts from notes &amp; stats
-        </p>
+        {/* 5. Footer */}
+        <footer
+          className="home-footer"
+          style={{
+            marginTop: '80px',
+            marginBottom: '30px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '16px',
+            borderTop: '1px solid var(--ln)',
+            paddingTop: '24px'
+          }}
+        >
+          <div className="mono" style={{ fontSize: '13px', color: 'var(--mu)' }}>
+            &copy; Kavy Sharma &middot; Jodhpur
+          </div>
+          <div
+            className="home-footer-links"
+            style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', fontSize: '13px' }}
+          >
+            <a
+              href="https://github.com/Kavy-Sharma"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'var(--ink)', textDecoration: 'none' }}
+            >
+              GitHub
+            </a>
+            <a
+              href="https://linkedin.com/in/kavysharma"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'var(--ink)', textDecoration: 'none' }}
+            >
+              LinkedIn
+            </a>
+            <a
+              href="https://tryhackme.com/p/kavysharma196"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'var(--ink)', textDecoration: 'none' }}
+            >
+              TryHackMe
+            </a>
+            <a
+              href="/resume"
+              style={{ color: 'var(--ink)', textDecoration: 'none' }}
+            >
+              Resume
+            </a>
+          </div>
+        </footer>
       </div>
 
       {/* 5. Floating Cursor Preview Box */}

@@ -1,0 +1,4 @@
+Green LED is on when I give instrution to the AI to either turn on the light(it is considered safe so passed without approval demand), or open the door (it is considered risky so needs approval first, then on for 3 seconds).
+Yellow LED is as kind of waiting signal, for anything to be done on the hardware, first the yellow LED is blinked.
+Red LED is always blinked when there is a certain kind of injection performed, or the agent blocked out request. 
+Buzzer is also one of the risky conditions which needs approval first and then sounds, it sounds when I tell it explicitly that sound the buzzer or sound the alarm or related prompts. 

@@ -268,14 +268,13 @@ export default function StoryDiagram({ type, scrollProgress = 0, lens = 'defend'
       return (
         <div className="diagram-container evidence-diagram">
           <div className="diagram-header">
-            <span className="mono tag-pill">OBSERVABLE EVIDENCE</span>
-            <span className="mono badge-live">VERIFIED RECORD</span>
+            <span className="mono tag-pill">TECHNICAL RECORD</span>
           </div>
 
           <div style={{ padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ padding: '14px', borderRadius: '8px', background: 'var(--bg)', border: '1px solid var(--ln)' }}>
               <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Primary Methodology
+                Primary Focus
               </span>
               <h4 style={{ margin: '6px 0 2px', fontSize: '15px', color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
                 {type === 'portswigger' ? 'Burp Suite Lab Progression' :
@@ -287,32 +286,20 @@ export default function StoryDiagram({ type, scrollProgress = 0, lens = 'defend'
               <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
                 {type === 'portswigger' ? 'Hands-on exploitation across Apprentice, Practitioner, and Expert lab environments.' :
                  type === 'tryhackme' ? 'Linux & Windows CTF machine exploitation from recon to root privilege escalation.' :
-                 type === 'techdefence' ? 'Client application security auditing with Burp Suite Repeater and Nessus scanners.' :
+                 type === 'techdefence' ? 'Network VAPT, firewall configuration reviews, and web application testing.' :
                  type === 'drdo' ? 'Mathematical trajectory flight modeling and sensor telemetry processing.' :
-                 type === 'ctf' ? 'Verified scoreboard standing and AI Security LLM governance certification.' : 'Reproducible step-by-step penetration testing notes.'}
+                 type === 'ctf' ? 'Scoreboard standing and AI Security LLM governance certification.' : 'Reproducible step-by-step penetration testing notes.'}
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <div style={{ padding: '12px', borderRadius: '6px', background: 'var(--bg)', border: '1px solid var(--ln)' }}>
-                <span className="mono" style={{ fontSize: '9px', color: 'var(--mu)' }}>VERIFICATION</span>
-                <div className="mono" style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ink)', marginTop: '2px' }}>
-                  {type === 'techdefence' ? '20+ Clients' :
-                   type === 'drdo' ? 'Simulation' :
-                   type === 'ctf' ? 'Top 150 Solo' : 'Lab Proof'}
-                </div>
-              </div>
-              <div style={{ padding: '12px', borderRadius: '6px', background: 'var(--bg)', border: '1px solid var(--ln)' }}>
-                <span className="mono" style={{ fontSize: '9px', color: 'var(--mu)' }}>SOURCE</span>
-                <div className="mono" style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ac)', marginTop: '2px' }}>
-                  facts.md
-                </div>
+            <div style={{ padding: '12px 14px', borderRadius: '6px', background: 'var(--bg)', border: '1px solid var(--ln)' }}>
+              <span className="mono" style={{ fontSize: '9px', color: 'var(--mu)' }}>KEY MILESTONE</span>
+              <div className="mono" style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ink)', marginTop: '2px' }}>
+                {type === 'techdefence' ? '20+ Client Environments' :
+                 type === 'drdo' ? 'UAV Flight Simulation' :
+                 type === 'ctf' ? 'Top 150 Solo Worldwide' : 'Hands-On Labs Cleared'}
               </div>
             </div>
-          </div>
-
-          <div className="diagram-footer">
-            <span className="mono status-note">Derived strictly from verified facts &bull; No invented numbers</span>
           </div>
         </div>
       );

@@ -1,12 +1,221 @@
 import React, { useEffect, useRef, useState } from 'react';
+import statsData from '../../data/stats.json';
+
+// Aegis rotating frames (overview -> setup -> hardware, 1.8s each)
+const AEGIS_FRAMES = [
+  {
+    src: '/screens/aegis-overview.webp',
+    alt: 'AegisAgent dashboard overview with 9 gates',
+    label: 'overview \u00b7 9-gate pipeline',
+    tag: 'REAL SCREENSHOT',
+    bg: '#0e1726'
+  },
+  {
+    src: '/screens/aegis-setup.webp',
+    alt: 'AegisAgent setup with laptop and ESP32 hardware',
+    label: 'setup \u00b7 laptop & real board',
+    tag: 'REAL SCREENSHOT',
+    bg: 'var(--bg)'
+  },
+  {
+    src: '/screens/aegis-esp32-blocked.webp',
+    alt: 'ESP32 hardware with red LED lit when attack is blocked',
+    label: 'hardware blocked (red LED)',
+    tag: 'REAL SCREENSHOT',
+    bg: 'var(--bg)'
+  }
+];
+
+// Helper component for blurred placeholder + lazy unclipped image
+function PreviewImage({ src, alt, bg = 'var(--bg)', width = 360, height = 210 }) {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div
+      className={`preview-img-wrapper ${loaded ? 'is-loaded' : 'is-loading'}`}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        background: bg,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <div className="preview-blur-placeholder" aria-hidden="true" />
+      <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        className="preview-img"
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain',
+          objectPosition: 'center',
+          display: 'block',
+          opacity: loaded ? 1 : 0,
+          transition: 'opacity 0.3s ease-in-out'
+        }}
+      />
+    </div>
+  );
+}
+
+// Helper component for PortSwigger 3 rings SVG
+function PortSwiggerRings() {
+  const apprentice = statsData?.portswigger?.apprentice || [31, 64];
+  const practitioner = statsData?.portswigger?.practitioner || [67, 175];
+  const expert = statsData?.portswigger?.expert || [7, 40];
+  const totalLabs = statsData?.portswiggerLabs || (apprentice[0] + practitioner[0] + expert[0]);
+
+  const tiers = [
+    { name: 'Apprentice', solved: apprentice[0], total: apprentice[1], color: '#2F9E6F', cx: 65 },
+    { name: 'Practitioner', solved: practitioner[0], total: practitioner[1], color: '#2F7FD0', cx: 180 },
+    { name: 'Expert', solved: expert[0], total: expert[1], color: '#E5533F', cx: 295 }
+  ];
+
+  const r = 27;
+  const circumference = 2 * Math.PI * r;
+
+  return (
+    <div
+      className="ps-rings-card"
+      style={{
+        padding: '12px 16px',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        background: 'var(--surf)'
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid var(--ln)',
+          paddingBottom: '6px'
+        }}
+      >
+        <b style={{ font: "700 13px var(--font-display)", color: 'var(--ink)' }}>PortSwigger Academy</b>
+        <span className="mono" style={{ fontSize: '11px', color: 'var(--ac)', fontWeight: 600 }}>
+          {totalLabs}+ labs solved
+        </span>
+      </div>
+
+      <svg
+        viewBox="0 0 360 105"
+        width="360"
+        height="105"
+        style={{ display: 'block', margin: '4px auto 0' }}
+        aria-label="PortSwigger progress rings"
+      >
+        {tiers.map((t) => {
+          const pct = Math.min(100, Math.round((t.solved / t.total) * 100));
+          const offset = circumference * (1 - t.solved / t.total);
+
+          return (
+            <g key={t.name}>
+              {/* Background ring */}
+              <circle
+                cx={t.cx}
+                cy={40}
+                r={r}
+                fill="none"
+                stroke="var(--ln)"
+                strokeWidth={5}
+              />
+              {/* Progress arc */}
+              <circle
+                cx={t.cx}
+                cy={40}
+                r={r}
+                fill="none"
+                stroke={t.color}
+                strokeWidth={5}
+                strokeLinecap="round"
+                strokeDasharray={circumference}
+                strokeDashoffset={offset}
+                transform={`rotate(-90 ${t.cx} 40)`}
+                style={{ transition: 'stroke-dashoffset 0.8s ease' }}
+              />
+              {/* Inside count */}
+              <text
+                x={t.cx}
+                y={38}
+                textAnchor="middle"
+                fill="var(--ink)"
+                fontSize="12"
+                fontWeight="700"
+                fontFamily="var(--font-mono)"
+              >
+                {t.solved}
+              </text>
+              <text
+                x={t.cx}
+                y={50}
+                textAnchor="middle"
+                fill="var(--mu)"
+                fontSize="8.5"
+                fontFamily="var(--font-mono)"
+              >
+                /{t.total}
+              </text>
+              {/* Below label */}
+              <text
+                x={t.cx}
+                y={80}
+                textAnchor="middle"
+                fill="var(--ink)"
+                fontSize="10"
+                fontWeight="600"
+                fontFamily="var(--font-body)"
+              >
+                {t.name}
+              </text>
+              <text
+                x={t.cx}
+                y={93}
+                textAnchor="middle"
+                fill="var(--mu)"
+                fontSize="8.5"
+                fontFamily="var(--font-mono)"
+              >
+                {pct}%
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+
+      <div
+        style={{
+          fontSize: '10.5px',
+          color: 'var(--mu)',
+          textAlign: 'center',
+          borderTop: '1px solid var(--ln)',
+          paddingTop: '6px'
+        }}
+      >
+        Burp Suite Pro &middot; SQLi, XSS, CSRF, SSRF, IDOR, Race Conditions
+      </div>
+    </div>
+  );
+}
 
 export default function FloatingPreview({ target, position }) {
   const fpRef = useRef(null);
   const [cachedTarget, setCachedTarget] = useState(target);
-  const [iframeLoaded, setIframeLoaded] = useState(false);
-  const [iframeFailed, setIframeFailed] = useState(false);
+  const [aegisIndex, setAegisIndex] = useState(0);
   const isShowingRef = useRef(false);
-  const timeoutRef = useRef(null);
 
   const stateRef = useRef({
     fx: 0,
@@ -16,39 +225,29 @@ export default function FloatingPreview({ target, position }) {
     raf: 0
   });
 
-  // Track target updates and reset iframe state per window
+  // Track target updates
   useEffect(() => {
     if (target) {
       setCachedTarget(target);
-      setIframeLoaded(false);
-      setIframeFailed(false);
-
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      // If live mode, set a 4-second timeout fallback to screenshot
-      if (target.previewMode === 'live' || target.s === 'live') {
-        timeoutRef.current = setTimeout(() => {
-          setIframeFailed(true);
-        }, 4000);
-      }
-    } else {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
     }
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
   }, [target]);
+
+  // Aegis rotating frames (1.8s per frame)
+  useEffect(() => {
+    if (target?.id !== 'aegis') {
+      setAegisIndex(0);
+      return;
+    }
+    const timer = setInterval(() => {
+      setAegisIndex((prev) => (prev + 1) % AEGIS_FRAMES.length);
+    }, 1800);
+
+    return () => clearInterval(timer);
+  }, [target?.id]);
 
   // Position and spring follow loop
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches) {
+    if (typeof window !== 'undefined' && ('ontouchstart' in window || window.matchMedia('(hover: none)').matches)) {
       return;
     }
 
@@ -60,11 +259,11 @@ export default function FloatingPreview({ target, position }) {
     let x = position.x + 22;
     let y = position.y - 40;
 
-    // Flip side near screen right edge (card width is 340px)
-    if (x + 360 > window.innerWidth - 12) {
-      x = position.x - 362;
+    // Flip side near screen right edge (card width is 360px)
+    if (x + 380 > window.innerWidth - 12) {
+      x = position.x - 382;
     }
-    y = Math.max(16, Math.min(window.innerHeight - 240, y));
+    y = Math.max(16, Math.min(window.innerHeight - 250, y));
 
     // Instant snap on first entrance
     if (!isShowingRef.current) {
@@ -104,216 +303,543 @@ export default function FloatingPreview({ target, position }) {
     };
   }, [position, target]);
 
-  if (typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches) {
+  // Don't render on touch screens or devices without hover
+  if (typeof window !== 'undefined' && ('ontouchstart' in window || window.matchMedia('(hover: none)').matches)) {
     return null;
   }
 
   const active = target || cachedTarget;
   if (!active) return null;
 
-  const isLive = active.previewMode === 'live' || active.s === 'live';
-  const hasPublicUrl = active.url && active.url.startsWith('http');
-  const rawUrl = active.url || active.u || '';
-  const urlLabel = rawUrl
-    ? rawUrl.replace(/^https?:\/\//, '')
-    : active.id === 'vt' || active.id === 'net'
-    ? 'notes.kavy.dev'
-    : 'verified-record';
+  // Determine top address-bar style label and tag
+  let urlLabel = '';
+  let tagLabel = 'FACT SHEET';
 
-  // Tag in browser top bar
-  const tagLabel = isLive
-    ? iframeFailed
-      ? 'AUTO-SHOT (FALLBACK)'
-      : 'LIVE'
-    : hasPublicUrl
-    ? 'AUTO-SHOT'
-    : 'FACT SHEET';
-
-  // Check if project has an automated screenshot available
-  const screenshotIds = ['phish', 'aegis', 'sent', 'safe', 'wr', 'ps', 'thm'];
-  const hasScreenshot = screenshotIds.includes(active.id);
+  switch (active.id) {
+    case 'aegis':
+      urlLabel = AEGIS_FRAMES[aegisIndex].label;
+      tagLabel = AEGIS_FRAMES[aegisIndex].tag;
+      break;
+    case 'phish':
+      urlLabel = 'phishsim-ai.onrender.com';
+      tagLabel = 'REAL SCREENSHOT';
+      break;
+    case 'sent':
+      urlLabel = 'terminal output';
+      tagLabel = 'REAL SCREENSHOT';
+      break;
+    case 'safe':
+      urlLabel = 'safeline-dvwa-waf-lab';
+      tagLabel = 'IN PROGRESS';
+      break;
+    case 'ps':
+      urlLabel = 'portswigger.net \u00b7 labs breakdown';
+      tagLabel = 'VERIFIED STATS';
+      break;
+    case 'thm':
+      urlLabel = 'tryhackme.com/p/kavysharma196';
+      tagLabel = 'REAL SCREENSHOT';
+      break;
+    case 'td':
+      urlLabel = 'techdefence.com \u00b7 internal audit';
+      tagLabel = 'FACT SHEET';
+      break;
+    case 'drdo':
+      urlLabel = 'drdo.gov.in \u00b7 defense simulation';
+      tagLabel = 'FACT SHEET';
+      break;
+    case 'ctf':
+      urlLabel = 'hackitup \u00b7 sea of secrets ctf';
+      tagLabel = 'FACT SHEET';
+      break;
+    case 'wr':
+      urlLabel = 'tryhackme.com \u00b7 machine walkthroughs';
+      tagLabel = 'FACT SHEET';
+      break;
+    case 'vt':
+    case 'net':
+      urlLabel = 'notes.kavy.dev \u00b7 field research';
+      tagLabel = 'FACT SHEET';
+      break;
+    case 'contact':
+      urlLabel = 'kavysharma196@gmail.com';
+      tagLabel = 'CONTACT';
+      break;
+    default:
+      urlLabel = active.url ? active.url.replace(/^https?:\/\//, '') : 'verified-record';
+      tagLabel = 'FACT SHEET';
+  }
 
   const renderContent = () => {
-    // 1. Live iframe mode
-    if (isLive && !iframeFailed) {
-      return (
-        <>
-          {/* Skeleton shown while iframe loads */}
-          {!iframeLoaded && (
-            <div className="sk">
-              <u className="a" />
-              <u className="b" />
-              <u className="c" />
-              <div />
-              <u className="b" />
-              <p>{active.title || 'Live Demo'} &middot; loading cloud deployment...</p>
-            </div>
-          )}
-          <iframe
-            loading="lazy"
-            src={active.url}
-            tabIndex={-1}
-            title={`${active.title} preview`}
-            onLoad={() => {
-              if (timeoutRef.current) clearTimeout(timeoutRef.current);
-              setIframeLoaded(true);
-            }}
-            onError={() => {
-              if (timeoutRef.current) clearTimeout(timeoutRef.current);
-              setIframeFailed(true);
-            }}
+    switch (active.id) {
+      // 1. AegisAgent: overview -> setup -> hardware (unclipped, fully shown)
+      case 'aegis': {
+        const curFrame = AEGIS_FRAMES[aegisIndex];
+        return (
+          <div
+            className="preview-slideshow"
             style={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              width: '1280px',
-              height: '800px',
-              border: 0,
-              transform: 'scale(0.265625)',
-              transformOrigin: '0 0',
-              background: '#fff',
-              opacity: iframeLoaded ? 1 : 0,
-              transition: 'opacity 0.25s ease'
-            }}
-          />
-        </>
-      );
-    }
-
-    // 2. Screenshot mode (or live mode fallback)
-    if (hasScreenshot) {
-      return (
-        <div style={{ position: 'relative', width: '100%', height: '100%', background: 'var(--bg)' }}>
-          <img
-            src={`/previews/${active.id}.png`}
-            alt={`${active.title} screenshot`}
-            loading="lazy"
-            style={{
+              position: 'relative',
               width: '100%',
               height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'top',
-              display: 'block'
+              overflow: 'hidden',
+              background: curFrame.bg,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
-            onError={(e) => {
-              // Graceful fallback to skeleton if image is missing
-              e.currentTarget.style.display = 'none';
-            }}
-          />
-        </div>
-      );
-    }
+          >
+            {AEGIS_FRAMES.map((frame, idx) => (
+              <div
+                key={frame.src}
+                className="preview-slide"
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  opacity: aegisIndex === idx ? 1 : 0,
+                  transition: 'opacity 0.5s ease-in-out',
+                  pointerEvents: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: frame.bg
+                }}
+              >
+                <img
+                  src={frame.src}
+                  alt={frame.alt}
+                  width={360}
+                  height={210}
+                  loading="lazy"
+                  decoding="async"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    objectPosition: 'center',
+                    display: 'block'
+                  }}
+                />
+              </div>
+            ))}
+            <div
+              className="slideshow-indicators"
+              style={{
+                position: 'absolute',
+                bottom: '8px',
+                right: '10px',
+                display: 'flex',
+                gap: '5px',
+                zIndex: 3,
+                background: 'rgba(0,0,0,0.6)',
+                padding: '3px 7px',
+                borderRadius: '99px'
+              }}
+            >
+              {AEGIS_FRAMES.map((_, idx) => (
+                <span
+                  key={idx}
+                  style={{
+                    width: '6px',
+                    height: '6px',
+                    borderRadius: '50%',
+                    background: aegisIndex === idx ? 'var(--ac)' : 'rgba(255,255,255,0.4)',
+                    transition: 'background 0.3s'
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      }
 
-    // 3. Clean designed text card for projects with no public page (DRDO, TechDefence, CTF, Contact, Notes)
-    switch (active.id) {
+      // 2. PhishSim: phishsim-landing photo (unclipped, fully shown)
+      case 'phish':
+        return (
+          <PreviewImage
+            src="/screens/phishsim-landing.webp"
+            alt="PhishSim AI landing page"
+            bg="#070b14"
+            width={360}
+            height={210}
+          />
+        );
+
+      // 3. SentinelFlow: sentinelflow-terminal (unclipped, fully shown)
+      case 'sent':
+        return (
+          <PreviewImage
+            src="/screens/sentinelflow-terminal.webp"
+            alt="SentinelFlow terminal intrusion detection"
+            bg="#0c1017"
+            width={360}
+            height={210}
+          />
+        );
+
+      // 4. SafeLine WAF Lab: designed card with architecture line
+      case 'safe':
+        return (
+          <div
+            style={{
+              padding: '16px 18px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              background: 'var(--surf)'
+            }}
+          >
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <span
+                  className="mono"
+                  style={{
+                    fontSize: '10px',
+                    color: '#E58A2F',
+                    background: 'rgba(229,138,47,0.12)',
+                    padding: '2px 7px',
+                    borderRadius: '99px',
+                    fontWeight: 700,
+                    letterSpacing: '0.06em'
+                  }}
+                >
+                  IN PROGRESS
+                </span>
+                <span className="mono" style={{ fontSize: '10px', color: 'var(--mu)' }}>
+                  VirtualBox NatNetwork
+                </span>
+              </div>
+              <h4 style={{ margin: '4px 0 6px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                SafeLine WAF + DVWA Lab
+              </h4>
+              <div
+                className="mono"
+                style={{
+                  fontSize: '10.5px',
+                  padding: '7px 9px',
+                  background: 'var(--bg)',
+                  borderRadius: '6px',
+                  border: '1px solid var(--ln)',
+                  color: 'var(--ink)',
+                  margin: '6px 0',
+                  lineHeight: 1.4
+                }}
+              >
+                Browser &rarr; HTTPS Reverse Proxy (SafeLine :443) &rarr; DVWA (:8080)
+              </div>
+              <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--mu)', lineHeight: 1.4 }}>
+                Reverse proxy and TLS termination verified; attack tests in progress.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Kali (10.0.2.3)
+              </span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Ubuntu (10.0.2.4)
+              </span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>
+                dvwa.local
+              </span>
+            </div>
+          </div>
+        );
+
+      // 5. PortSwigger Academy: 3 SVG Progress rings
+      case 'ps':
+        return <PortSwiggerRings />;
+
+      // 6. TryHackMe: thm-profile (user photo crop: avatar, username & rank cards)
+      case 'thm':
+        return (
+          <PreviewImage
+            src="/screens/thm-profile.webp"
+            alt="TryHackMe verified profile top 8%"
+            bg="#171d2d"
+            width={360}
+            height={210}
+          />
+        );
+
+      // 7. TechDefence: designed card
       case 'td':
         return (
-          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--surf)' }}>
+          <div
+            style={{
+              padding: '16px 18px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              background: 'var(--surf)'
+            }}
+          >
             <div>
-              <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span
+                className="mono"
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--ac)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  fontWeight: 600
+                }}
+              >
                 VAPT INTERNSHIP &middot; JUN&ndash;JUL 2026
               </span>
               <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-                TechDefence Labs
+                TechDefence
               </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.4 }}>
-                Tested enterprise web applications for 20+ clients using Burp Suite, Nessus, Nmap, and Kali Linux.
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
+                Worked on network VAPT with Nessus and Nmap, firewall reviews, CIS configuration audits, and web testing.
               </p>
             </div>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Burp Suite</span>
-              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Nessus</span>
-              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>OWASP Top 10</span>
-              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>Internal client scope</span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Burp Suite
+              </span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Nessus
+              </span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Nmap
+              </span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>
+                Confidential scope
+              </span>
             </div>
           </div>
         );
 
+      // 8. DRDO: designed card
       case 'drdo':
         return (
-          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--surf)' }}>
+          <div
+            style={{
+              padding: '16px 18px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              background: 'var(--surf)'
+            }}
+          >
             <div>
-              <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span
+                className="mono"
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--ac)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  fontWeight: 600
+                }}
+              >
                 DEFENSE RESEARCH &middot; JUN&ndash;JUL 2025
               </span>
               <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-                Defence Research &amp; Dev Organisation
+                Defence Research &amp; Development Organisation
               </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.4 }}>
-                Developed Unmanned Aerial Vehicle (UAV) trajectory flight simulation models and sensor telemetry in MATLAB.
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
+                Built MATLAB UAV flight-path simulations with monitoring logic that flags routes entering restricted zones.
               </p>
             </div>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>MATLAB</span>
-              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Telemetry</span>
-              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Flight Sim</span>
-              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>Classified Defense Data</span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                MATLAB
+              </span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Flight Sim
+              </span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>
+                Confidential project
+              </span>
             </div>
           </div>
         );
 
+      // 9. CTF & AI Cert: designed card
       case 'ctf':
         return (
-          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--surf)' }}>
+          <div
+            style={{
+              padding: '16px 18px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              background: 'var(--surf)'
+            }}
+          >
             <div>
-              <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
-                VERIFIED ACHIEVEMENTS &middot; 2024&ndash;2026
+              <span
+                className="mono"
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--ac)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  fontWeight: 600
+                }}
+              >
+                ACHIEVEMENTS &middot; OCT 2026 &amp; SEP 2026
               </span>
               <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
                 Sea of Secrets CTF &amp; AI Security Cert
               </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.4 }}>
-                Solo rank under 150 worldwide in Sea of Secrets CTF. Certified in AI security fundamentals &amp; OWASP Top 10 for LLMs.
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
+                Sea of Secrets CTF solo rank under 150 of 2,500. Introduction to AI Security certification (AI Security University).
               </p>
             </div>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Top 150 Solo</span>
-              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>LLM Security</span>
-              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>Observable Proof</span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Solo Rank &lt; 150
+              </span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                AI Guardrails
+              </span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>
+                Verified
+              </span>
             </div>
           </div>
         );
 
+      // 10. Machine write-ups: designed card
+      case 'wr':
+        return (
+          <div
+            style={{
+              padding: '16px 18px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              background: 'var(--surf)'
+            }}
+          >
+            <div>
+              <span
+                className="mono"
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--ac)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  fontWeight: 600
+                }}
+              >
+                TRYHACKME &middot; WALKTHROUGHS
+              </span>
+              <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                Machine Write-ups
+              </h4>
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
+                Basic Pentesting, RootMe, Kenobi, Meow, Fawn, and Dancing. Port enumeration, service exploitation, and privilege escalation.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Linux PrivEsc
+              </span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Nmap &amp; SUID
+              </span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>
+                Field Walkthroughs
+              </span>
+            </div>
+          </div>
+        );
+
+      // 11. Contact: designed card
       case 'contact':
         return (
-          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--surf)' }}>
+          <div
+            style={{
+              padding: '16px 18px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              background: 'var(--surf)'
+            }}
+          >
             <div>
-              <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span
+                className="mono"
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--ac)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  fontWeight: 600
+                }}
+              >
                 DIRECT CONTACT &middot; JODHPUR
               </span>
               <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
                 Open to Internships &amp; Jobs
               </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.4 }}>
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
                 Say hi, the door is open. Click the door below to copy email address.
               </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span className="mono" style={{ fontSize: '11px', color: 'var(--ac)', fontWeight: 600 }}>kavysharma196@gmail.com</span>
-              <span className="mono" style={{ fontSize: '9px', color: 'var(--mu)' }}>One-click copy</span>
+              <span className="mono" style={{ fontSize: '11px', color: 'var(--ac)', fontWeight: 600 }}>
+                kavysharma196@gmail.com
+              </span>
+              <span className="mono" style={{ fontSize: '9px', color: 'var(--mu)' }}>
+                One-click copy
+              </span>
             </div>
           </div>
         );
 
+      // Default: Vulnerability Table / Notes
       default:
-        // Vulnerability Table / Notes
         return (
-          <div style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--surf)' }}>
+          <div
+            style={{
+              padding: '16px 18px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              background: 'var(--surf)'
+            }}
+          >
             <div>
-              <span className="mono" style={{ fontSize: '10px', color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <span
+                className="mono"
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--ac)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  fontWeight: 600
+                }}
+              >
                 FIELD RESEARCH &middot; 2-MIN READS
               </span>
               <h4 style={{ margin: '6px 0 4px', fontSize: '15px', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
                 {active.title}
               </h4>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.4 }}>
+              <p style={{ margin: 0, fontSize: '12px', color: 'var(--mu)', lineHeight: 1.45 }}>
                 {active.desc || active['one-line'] || 'Short, plain-language field notes cut from real lab exercises.'}
               </p>
             </div>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Web Security</span>
-              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--sky)', color: 'var(--ink)' }}>Networks</span>
-              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>Interactive /notes</span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Web Security
+              </span>
+              <span className="mono" style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg)', color: 'var(--ink)', border: '1px solid var(--ln)' }}>
+                Networks
+              </span>
+              <span className="mono" style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--mu)' }}>
+                Interactive /notes
+              </span>
             </div>
           </div>
         );
@@ -331,8 +857,12 @@ export default function FloatingPreview({ target, position }) {
         <s />
         <s />
         <s />
-        <span id="fpu">{urlLabel}</span>
-        <em id="fpl">{tagLabel}</em>
+        <span id="fpu" className="mono" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+          {urlLabel}
+        </span>
+        <em id="fpl" className="mono">
+          {tagLabel}
+        </em>
       </div>
 
       <div className="scr" id="fps">

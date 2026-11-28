@@ -1,7 +1,7 @@
 {
   "asOf": "2026-11-25",
   "portswiggerLabs": 105,
-  "thmRank": "top 7%",
+  "thmRank": "top 8%",
   "nowLine": "Building AegisAgent hardware defense & practicing PortSwigger labs",
   "updated": "2026-11-25",
   "portswigger": {
@@ -10,7 +10,7 @@
     "expert": [7, 40]
   },
   "tryhackme": {
-    "top_percent": 7,
+    "top_percent": 8,
     "profile_url": "https://tryhackme.com/p/kavysharma196"
   },
   "htb_starting_point": [

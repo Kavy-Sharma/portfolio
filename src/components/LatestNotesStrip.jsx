@@ -21,7 +21,7 @@ export default function LatestNotesStrip() {
     <section className="latest-notes-strip" aria-label="Latest field notes">
       <div className="latest-strip-header">
         <div>
-          <span className="tag">Floor 3 &middot; Field Research &middot; Sample Posts</span>
+          <span className="tag">Floor 3 &middot; Field Research &middot; Field Notes</span>
           <h2 className="latest-strip-title">Latest from the Vulnerability Table</h2>
           <p className="latest-strip-desc">
             Short, 2-minute breakdowns of real vulnerabilities, exploitation techniques, and defensive fixes.

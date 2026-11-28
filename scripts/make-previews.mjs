@@ -6,12 +6,11 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
-const projectsFile = path.resolve(rootDir, 'data/projects.json');
-const outDir = path.resolve(rootDir, 'public/previews');
+const screensDir = path.resolve(rootDir, 'public/screens');
+const previewsDir = path.resolve(rootDir, 'public/previews');
 
-if (!fs.existsSync(outDir)) {
-  fs.mkdirSync(outDir, { recursive: true });
-}
+if (!fs.existsSync(screensDir)) fs.mkdirSync(screensDir, { recursive: true });
+if (!fs.existsSync(previewsDir)) fs.mkdirSync(previewsDir, { recursive: true });
 
 // Optional sharp optimization
 let sharp = null;
@@ -19,92 +18,91 @@ try {
   const sharpModule = await import('sharp');
   sharp = sharpModule.default || sharpModule;
 } catch (e) {
-  console.log('sharp not found, saving uncompressed screenshots.');
+  // sharp optional
 }
 
-async function run() {
-  const raw = fs.readFileSync(projectsFile, 'utf-8');
-  const projects = JSON.parse(raw);
+async function capturePhishLive() {
+  const targetUrl = 'https://phishsim-ai.onrender.com';
+  const outFile = path.resolve(screensDir, 'phish-live.webp');
+  const tempFile = path.resolve(screensDir, 'phish-live.temp.webp');
 
-  // Targets: projects with a public web url
-  const targets = projects.filter(
-    (p) => p.url && p.url.startsWith('http')
-  );
-
-  console.log(`Found ${targets.length} projects with public URLs to capture:`);
-  targets.forEach((t) => console.log(` - ${t.id}: ${t.url} (${t.previewMode})`));
+  console.log(`\nAttempting daily live capture: ${targetUrl}...`);
+  console.log('Allowing up to 60s for Render free-tier cold start to wake up...');
 
   let browser;
-  try {
-    browser = await chromium.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-  } catch (err) {
-    console.log('Standard chromium binary not found, launching with system Chrome channel...');
-    browser = await chromium.launch({
-      channel: 'chrome',
-      headless: true,
-      args: ['--no-sandbox']
-    });
-  }
+  const launchOptions = [
+    { channel: 'chrome', headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] },
+    { channel: 'msedge', headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] },
+    { headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+  ];
 
-  const context = await browser.newContext({
-    viewport: { width: 1280, height: 800 },
-    userAgent:
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
-  });
-
-  const page = await context.newPage();
-
-  for (const project of targets) {
-    const outFile = path.resolve(outDir, `${project.id}.png`);
-    const tempFile = path.resolve(outDir, `${project.id}.temp.png`);
-    console.log(`\nCapturing [${project.id}] (${project.title}) -> ${project.url}...`);
-
+  for (const opts of launchOptions) {
     try {
-      await page.goto(project.url, {
-        waitUntil: 'domcontentloaded',
-        timeout: 25000
-      });
-
-      // Wait a moment for dynamic rendering and webfonts
-      await page.waitForTimeout(2500);
-
-      const buffer = await page.screenshot({ type: 'png' });
-
-      if (sharp) {
-        // Optimize to 680x425 (crisp 2x retina for 340x200 card) under 150KB
-        await sharp(buffer)
-          .resize(680, 425, { fit: 'cover', position: 'top' })
-          .png({ quality: 80, compressionLevel: 9 })
-          .toFile(tempFile);
-      } else {
-        fs.writeFileSync(tempFile, buffer);
-      }
-
-      fs.renameSync(tempFile, outFile);
-      const stats = fs.statSync(outFile);
-      const kb = Math.round(stats.size / 1024);
-      console.log(`✓ Saved public/previews/${project.id}.png (${kb} KB)`);
-    } catch (err) {
-      console.warn(`⚠ Could not capture ${project.id} (${project.url}): ${err.message}`);
-      if (fs.existsSync(tempFile)) {
-        try { fs.unlinkSync(tempFile); } catch (e) {}
-      }
-      if (fs.existsSync(outFile)) {
-        console.log(`  Retaining existing public/previews/${project.id}.png`);
-      } else {
-        console.log(`  No previous screenshot existed for ${project.id}.`);
-      }
+      browser = await chromium.launch(opts);
+      break;
+    } catch (e) {
+      // try next
     }
   }
 
-  await browser.close();
-  console.log('\nPreview generation complete.');
+  if (!browser) {
+    console.warn('⚠ Could not launch browser for live screenshot. Keeping existing phish-live.webp.');
+    return;
+  }
+
+  try {
+    const context = await browser.newContext({
+      viewport: { width: 1280, height: 800 },
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+    });
+
+    const page = await context.newPage();
+
+    // 60-second timeout for server wake-up
+    await page.goto(targetUrl, {
+      waitUntil: 'networkidle',
+      timeout: 60000
+    });
+
+    await page.waitForTimeout(2000);
+
+    const buffer = await page.screenshot({ type: 'png' });
+
+    if (sharp) {
+      // Optimize to 680x425 under 150KB webp
+      await sharp(buffer)
+        .resize(680, 425, { fit: 'cover', position: 'top' })
+        .webp({ quality: 82 })
+        .toFile(tempFile);
+    } else {
+      fs.writeFileSync(tempFile, buffer);
+    }
+
+    fs.renameSync(tempFile, outFile);
+    // Also copy to previews dir for backward compatibility
+    fs.copyFileSync(outFile, path.resolve(previewsDir, 'phish-live.webp'));
+
+    const stats = fs.statSync(outFile);
+    console.log(`✓ Successfully updated ${outFile} (${Math.round(stats.size / 1024)} KB)`);
+  } catch (err) {
+    console.warn(`⚠ PhishSim capture failed (${err.message}). Retaining existing phish-live.webp.`);
+    if (fs.existsSync(tempFile)) {
+      try { fs.unlinkSync(tempFile); } catch (e) {}
+    }
+  } finally {
+    await browser.close();
+  }
 }
 
-run().catch((e) => {
-  console.error('Fatal error during preview generation:', e);
-  process.exit(1);
+async function run() {
+  console.log('Running daily preview screenshot check (PhishSim live only)...');
+  console.log('Notice: github.com, tryhackme.com, and portswigger.net screenshots are disabled per rules.');
+  await capturePhishLive();
+  console.log('Preview task completed.');
+}
+
+run().catch((err) => {
+  console.warn('Non-fatal error during preview task:', err.message);
+  process.exit(0);
 });

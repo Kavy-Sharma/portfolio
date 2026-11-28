@@ -1,8 +1,12 @@
 # Kavy Sharma — Security Research & VAPT Portfolio
 
-A personal cybersecurity and AI security portfolio built end-to-end with **Vite + React**, **GSAP + ScrollTrigger**, **Lenis smooth scrolling**, and **pure CSS variables** (zero UI kits, zero Tailwind templates).
+> Personal cybersecurity and AI security portfolio structured as an interactive 5-floor building, featuring defensive architecture simulations, offensive lab walkthroughs, and field research notes.
+>
+> **Live Site:** [https://kavysharma.dev](https://kavysharma.dev) &nbsp;|&nbsp; **Stack:** React 18, Vite 6, GSAP 3.12, Lenis smooth scrolling, and vanilla CSS custom properties.
 
-Designed around a dual **Day / Night** architectural concept:
+---
+
+## 🏛️ Concept & Themes
 - **Defend (Daylight)**: Calm, light default theme representing defensive verification, parameter guards, and reverse proxies (`#EEF2F5`).
 - **Attack (Night)**: Dark adversary theme representing penetration testing, prompt injection fuzzing, and exploit paths (`#150C11`).
 - **Signature Visual**: Smooth, slow-drifting contour lines rendered dynamically via marching squares on HTML5 canvas (~20fps, throttled, pauses offscreen, static when `prefers-reduced-motion` is enabled).

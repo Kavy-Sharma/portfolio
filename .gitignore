@@ -34,3 +34,9 @@ pnpm-debug.log*
 *.sw?
 .DS_Store
 Thumbs.db
+
+# Privacy safety net
+private/
+**/reports-private/
+project-notes/private/
+dev-scripts/

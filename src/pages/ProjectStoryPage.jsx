@@ -47,6 +47,7 @@ export default function ProjectStoryPage() {
   // Default lens: attack when theme is attack/night, defend when defend/day
   const [activeLens, setActiveLens] = useState(isAttack ? 'attack' : 'defend');
   const [scrollProgress, setScrollProgress] = useState(0.2);
+  const [showBenchmark, setShowBenchmark] = useState(false);
 
   const pageRef = useRef(null);
   const beatsRef = useRef(null);
@@ -129,7 +130,7 @@ export default function ProjectStoryPage() {
 
   // Replace stats tokens with dynamic values from stats.json
   const totalLabs = statsData?.portswiggerLabs || 105;
-  const thmRank = statsData?.thmRank || 'top 7%';
+  const thmRank = statsData?.thmRank || 'top 8%';
   const formattedOneLine = (story.oneLine || '')
     .replace('__LABS__', totalLabs)
     .replace('__THM__', thmRank);
@@ -184,66 +185,153 @@ export default function ProjectStoryPage() {
             )}
           </header>
 
-          {/* 2-column layout on desktop: Story beats + sticky diagram */}
+          {/* 2-column layout on desktop: Story content + sticky diagram */}
           <div className="story-grid">
-            {/* Left Column: Break/Fix switch + Beats + Limits */}
+            {/* Left Column: Work experience / Proof / or Project beats + Limits */}
             <div className="story-left-col">
-              {/* 1. Break it / Fix it switch (if threat info is present) */}
-              {story.breakFix && (
-                <section className="break-fix-section" aria-label="Attacker vs Defender perspective">
-                  <div className="break-fix-header">
-                    <span className="mono bf-label">BREAK IT / FIX IT PERSPECTIVE</span>
-                    <div className="break-fix-toggle" role="group">
-                      <button
-                        type="button"
-                        className={`bf-btn ${activeLens === 'attack' ? 'active-attack' : ''}`}
-                        onClick={() => setActiveLens('attack')}
-                        aria-pressed={activeLens === 'attack'}
-                      >
-                        <span className="bf-indicator red" />
-                        Break it (Attacker)
-                      </button>
-                      <button
-                        type="button"
-                        className={`bf-btn ${activeLens === 'defend' ? 'active-defend' : ''}`}
-                        onClick={() => setActiveLens('defend')}
-                        aria-pressed={activeLens === 'defend'}
-                      >
-                        <span className="bf-indicator blue" />
-                        Fix it (Defender)
-                      </button>
+              {/* WORK EXPERIENCE (td, drdo) */}
+              {story.isWork && (
+                <section className="work-story-content" aria-label="Work Experience Overview">
+                  <div className="work-meta-chips">
+                    <div className="work-meta-item">
+                      <span className="work-meta-label">Role</span>
+                      <span className="work-meta-val">{story.role}</span>
                     </div>
-                  </div>
-
-                  <div className={`break-fix-card ${activeLens}`}>
-                    {activeLens === 'attack' ? (
-                      <div className="bf-card-inner attack">
-                        <span className="mono bf-role-tag red">ATTACKER VIEW</span>
-                        <h4 className="bf-card-title">{story.breakFix.redTitle}</h4>
-                        <p className="bf-card-text">{story.breakFix.redText}</p>
-                      </div>
-                    ) : (
-                      <div className="bf-card-inner defend">
-                        <span className="mono bf-role-tag blue">DEFENDER VIEW</span>
-                        <h4 className="bf-card-title">{story.breakFix.blueTitle}</h4>
-                        <p className="bf-card-text">{story.breakFix.blueText}</p>
+                    <div className="work-meta-item">
+                      <span className="work-meta-label">Dates</span>
+                      <span className="work-meta-val">{story.dates}</span>
+                    </div>
+                    {story.location && (
+                      <div className="work-meta-item">
+                        <span className="work-meta-label">Location</span>
+                        <span className="work-meta-val">{story.location}</span>
                       </div>
                     )}
+                    {story.tools && (
+                      <div className="work-meta-item">
+                        <span className="work-meta-label">Tools</span>
+                        <span className="work-meta-val">{story.tools.join(', ')}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="work-honest-card">
+                    <h3 className="work-honest-title">Overview</h3>
+                    <p className="work-honest-text">{story.honestLine}</p>
+                  </div>
+
+                  <div className="work-samples-box">
+                    <h3 className="work-samples-title">Work samples</h3>
+                    <p className="work-samples-empty">
+                      {story.workSamples && story.workSamples.length > 0
+                        ? story.workSamples.join(', ')
+                        : 'Work samples will appear here once redacted reports are published.'}
+                    </p>
                   </div>
                 </section>
               )}
 
-              {/* 2. Story Beats (3 to 5 beats with vertical line & dots) */}
-              <section className="story-beats" ref={beatsRef} aria-label="Story progression">
-                {story.beats.map((beat, idx) => (
-                  <article key={idx} className="beat">
-                    <b>{beat.title}</b>
-                    <div className="beat-text">{beat.text}</div>
-                  </article>
-                ))}
-              </section>
+              {/* VERIFIED PROOF (ps, thm, ctf) */}
+              {story.isProof && (
+                <section className="proof-story-content" aria-label="Verified Proof Details">
+                  <div className="proof-summary-card">
+                    <h3 className="proof-summary-title">Summary</h3>
+                    <p className="proof-summary-text">{story.summary}</p>
+                  </div>
 
-              {/* 3. Limitations box (honest boundaries from README) */}
+                  {story.proofDetails && (
+                    <div className="proof-details-list">
+                      {story.proofDetails.map((detail, idx) => (
+                        <div key={idx} className="proof-detail-item">
+                          <span className="proof-detail-label">{detail.label}</span>
+                          <p className="proof-detail-val">{detail.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              )}
+
+              {/* REGULAR PROJECTS: Break/Fix switch + Beats */}
+              {!story.isWork && !story.isProof && (
+                <>
+                  {story.breakFix && (
+                    <section className="break-fix-section" aria-label="Attacker vs Defender perspective">
+                      <div className="break-fix-header">
+                        <span className="mono bf-label">BREAK IT / FIX IT PERSPECTIVE</span>
+                        <div className="break-fix-toggle" role="group">
+                          <button
+                            type="button"
+                            className={`bf-btn ${activeLens === 'attack' ? 'active-attack' : ''}`}
+                            onClick={() => setActiveLens('attack')}
+                            aria-pressed={activeLens === 'attack'}
+                          >
+                            <span className="bf-indicator red" />
+                            Break it (Attacker)
+                          </button>
+                          <button
+                            type="button"
+                            className={`bf-btn ${activeLens === 'defend' ? 'active-defend' : ''}`}
+                            onClick={() => setActiveLens('defend')}
+                            aria-pressed={activeLens === 'defend'}
+                          >
+                            <span className="bf-indicator blue" />
+                            Fix it (Defender)
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className={`break-fix-card ${activeLens}`}>
+                        {activeLens === 'attack' ? (
+                          <div className="bf-card-inner attack">
+                            <span className="mono bf-role-tag red">ATTACKER VIEW</span>
+                            <h4 className="bf-card-title">{story.breakFix.redTitle}</h4>
+                            <p className="bf-card-text">{story.breakFix.redText}</p>
+                          </div>
+                        ) : (
+                          <div className="bf-card-inner defend">
+                            <span className="mono bf-role-tag blue">DEFENDER VIEW</span>
+                            <h4 className="bf-card-title">{story.breakFix.blueTitle}</h4>
+                            <p className="bf-card-text">{story.breakFix.blueText}</p>
+                          </div>
+                        )}
+                      </div>
+                    </section>
+                  )}
+
+                  {story.beats && (
+                    <section className="story-beats" ref={beatsRef} aria-label="Story progression">
+                      {story.beats.map((beat, idx) => (
+                        <article key={idx} className="beat">
+                          <b>{beat.title}</b>
+                          <div className="beat-text">
+                            {beat.text}
+                            {beat.title === 'What I learned' && story.benchmarkNote && (
+                              <div style={{ marginTop: '8px' }}>
+                                <button
+                                  type="button"
+                                  className="benchmark-note-btn"
+                                  onClick={() => setShowBenchmark((prev) => !prev)}
+                                  aria-expanded={showBenchmark}
+                                >
+                                  {showBenchmark ? 'Hide measurement details \u2191' : 'How this was measured \u2192'}
+                                </button>
+                                {showBenchmark && (
+                                  <div className="benchmark-note-callout">
+                                    <strong>Benchmark Note:</strong> {story.benchmarkNote}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </article>
+                      ))}
+                    </section>
+                  )}
+                </>
+              )}
+
+              {/* Limitations box (honest boundaries from README) */}
               {story.limits && story.limits.length > 0 && (
                 <section className="limits-box" aria-label="Honest boundaries and limitations">
                   <div className="limits-header">
