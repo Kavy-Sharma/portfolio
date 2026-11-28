@@ -1,8 +1,19 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import CategoryArt from '../assets/art';
 import { getAllNotes, getCategories } from '../utils/notesLoader';
 import { navigateWithReveal } from '../utils/transitionNavigate';
+
+const CATEGORY_DESCRIPTIONS = {
+  Access: 'Privilege escalation, IDOR boundaries, and broken access controls.',
+  Injection: 'SQL injection, blind SQLi, and cross-site scripting (XSS).',
+  Files: 'Path traversal and file upload security controls.',
+  Auth: 'Broken authentication, session security, and CSRF.',
+  Logic: 'Business logic flaws and concurrency race conditions.',
+  Network: 'TCP/UDP protocols, Nmap scripting, and service enumeration.',
+  Machines: 'Hands-on machine exploitation write-ups from TryHackMe and HackTheBox.'
+};
 
 export default function NotesPage() {
   const navigate = useNavigate();
@@ -94,6 +105,14 @@ export default function NotesPage() {
                   onClick={() => setSelectedCat(cat)}
                   aria-selected={selectedCat === cat}
                 >
+                  {cat !== 'All' && (
+                    <CategoryArt
+                      category={cat}
+                      size={16}
+                      animated={true}
+                      style={{ marginRight: '6px' }}
+                    />
+                  )}
                   {cat}
                 </button>
               ))}
@@ -120,6 +139,32 @@ export default function NotesPage() {
               )}
             </div>
           </div>
+
+          {/* Filtered category view header */}
+          {selectedCat !== 'All' && (
+            <div className="cat-filter-banner" role="region" aria-label={`${selectedCat} category filter header`}>
+              <div className="cat-filter-banner-art">
+                <CategoryArt category={selectedCat} size={44} animated={true} />
+              </div>
+              <div className="cat-filter-banner-text">
+                <div className="cat-filter-banner-top">
+                  <span className="mono cat-filter-label">CATEGORY &middot; {selectedCat.toUpperCase()}</span>
+                  <button
+                    type="button"
+                    className="cat-filter-clear-btn mono"
+                    onClick={() => setSelectedCat('All')}
+                    aria-label="Clear filter to show all categories"
+                  >
+                    Show all &times;
+                  </button>
+                </div>
+                <h3 className="cat-filter-title">{selectedCat}</h3>
+                <p className="cat-filter-desc">
+                  {CATEGORY_DESCRIPTIONS[selectedCat] || `Field notes on ${selectedCat.toLowerCase()} vulnerabilities and test cases.`}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Periodic Table Grid */}
           <div className="grid-vt" role="region" aria-label="Vulnerability tiles grid">

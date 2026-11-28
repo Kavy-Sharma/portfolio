@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { marked } from 'marked';
 import Header from '../components/Header';
+import CategoryArt from '../assets/art';
+import NoteMicroDemo from '../components/NoteMicroDemo';
 import { getNoteBySlug } from '../utils/notesLoader';
 import { navigateWithReveal } from '../utils/transitionNavigate';
 
@@ -26,6 +28,17 @@ export default function NoteDetailPage() {
     if (!note?.content) return '';
     return marked.parse(note.content);
   }, [note?.content]);
+
+  // Update document title and og:image
+  useEffect(() => {
+    if (note) {
+      document.title = `${note.title} · Field Note · Kavy Sharma`;
+      const ogMeta = document.querySelector('meta[property="og:image"]');
+      if (ogMeta) {
+        ogMeta.setAttribute('content', `/og/notes-${note.category.toLowerCase()}.png`);
+      }
+    }
+  }, [note]);
 
   // Focus management
   useEffect(() => {
@@ -130,6 +143,10 @@ export default function NoteDetailPage() {
 
           {/* Header */}
           <header className="note-reader-header">
+            <div className="note-reader-art-wrap">
+              <CategoryArt category={note.category} size={54} animated={true} />
+            </div>
+
             <div className="note-meta-row">
               <span className="tag" style={{ borderColor: note.color }}>
                 <b style={{ color: note.color, marginRight: '4px' }}>{note.symbol}</b>
@@ -152,6 +169,9 @@ export default function NoteDetailPage() {
               <p className="rb-desc">{note.blue}</p>
             </div>
           </div>
+
+          {/* Client-Side Interactive Micro-Demo (IDOR, SQLi, XSS) */}
+          <NoteMicroDemo slug={note.slug} />
 
           {/* Body Content from marked */}
           <div
